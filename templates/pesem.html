@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesmi</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .naslov-celica {
+            cursor: pointer; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Seznam pesmi</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Naslov</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pesem in pesmi %}
+            <tr>
+                <td>{{ pesem.id }}</td>
+                <td onclick="handleClick(this)" class="naslov-celica" data-id="{{ pesem.id }}">{{ pesem.naslov }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function handleClick(element) {
+            var naslov = element.textContent; // pridobi naslov pesmi iz celice 
+            var songId = element.getAttribute("data-id"); // pridobi ID pesmi iz atributa data-id
+    
+            // Doda pesem v čakalno vrsto
+            $.ajax({
+                url: "/predvajaj/" + songId, // URL za dodajanje pesmi v čakalno vrsto
+                method: "POST", 
+                contentType: "application/json", // nastavi tip vsebine na JSON
+                data: JSON.stringify({ id: songId }), // pošlji ID pesmi kot JSON
+                success: function(result) { 
+                    alert(result.message); // uspešno dodano sporočilo
+                    window.location.href = "/hvala"; // preusmeri na stran hvala
+                },
+                error: function(xhr, status, error) { // napaka pri dodajanju
+                    alert("Napaka pri predvajanju: " + error); // prikaži napako
+                }
+            });
+        }
+    </script>
+    
+</body>
+</html>
