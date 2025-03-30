@@ -2,27 +2,110 @@
 <html lang="sl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Nastavi prikaz za mobilne naprave -->
     <title>Čakalna vrsta</title>
     <style>
+        body {
+            background-color: #EF4B62; /* Rdeča barva ozadja */
+            color: #F6F4F4; /* Bela barva besedila */
+            font-family: Arial, sans-serif; /* Pisava */
+            margin: 0; /* Odstrani privzeti rob */
+            padding: 10px; /* Dodaj robove na straneh */
+        }
+        h1 {
+            text-align: center; /* Sredinska poravnava naslova */
+            margin: 20px 0; /* Razmik nad in pod naslovom */
+            font-size: 1.8em; /* Velikost pisave naslova */
+        }
         table {
-            border-collapse: collapse;
-            width: 80%;
-            margin: 20px auto;
+            width: 100%; /* Polna širina tabele */
+            max-width: 50%; /* Največja širina na večjih zaslonih */
+            margin: 20px auto; /* Sredinska poravnava z razmikom */
+            border-collapse: separate; /* Ločeni robovi celic */
+            border-spacing: 0; /* Brez razmika med celicami */
+            background-color: rgba(255, 255, 255, 0.1); /* Prosojno belo ozadje */
+            border-radius: 10px; /* Zaobljeni robovi */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Senčenje tabele */
         }
         th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
+            padding: 12px 15px; /* Notranji razmik v celicah */
+            text-align: left; /* Leva poravnava besedila */
+            font-size: 1em; /* Velikost pisave v celicah */
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #F6F4F4; /* Belo ozadje glave tabele */
+            color: #EF4B62; /* Rdeča barva besedila glave */
+            font-weight: bold; /* Krepko besedilo */
+            border-radius: 10px 10px 0 0; /* Zaobljeni zgornji robovi glave */
+        }
+        td {
+            border-bottom: 1px solid rgba(246, 244, 244, 0.3); /* Spodnja črta celic */
+        }
+        tr:last-child td {
+            border-bottom: none; /* Odstrani spodnjo črto pri zadnji vrstici */
+        }
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.2); /* Osvetlitev ob prehodu miške */
+            transition: background-color 0.3s ease; /* Gladka sprememba barve */
+        }
+        a {
+            color: #F6F4F4; /* Bela barva povezave */
+            text-decoration: none; /* Brez podčrtavanja */
+            display: block; /* Povezava kot blok */
+            text-align: center; /* Sredinska poravnava */
+            margin: 20px 0; /* Razmik nad in pod povezavo */
+            font-size: 1em; /* Velikost pisave povezave */
+        }
+        a:hover {
+            text-decoration: underline; /* Podčrtaj ob prehodu miške */
+        }
+        p {
+            text-align: center; /* Sredinska poravnava odstavka */
+        }
+        .logo {
+            display: block; /* Logo kot blok */
+            margin: 20px auto; /* Sredinska poravnava z razmikom */
+            max-width: 200px; /* Največja širina logotipa */
+            width: 100%; /* Prilagoditev širine zaslonu */
+        }
+        .qr-code {
+            display: block; /* QR koda kot blok */
+            margin: 0 auto; /* Sredinska poravnava */
+            border: 3px solid #000000; /* Črn rob okoli QR kode */
+            border-radius: 5px; /* Zaobljeni robovi */
+            padding: 10px; /* Notranji razmik */
+            background-color: #FFFFFF; /* Belo ozadje */
+            max-width: 250px; /* Največja širina QR kode */
+            width: 80%; /* Prilagoditev širine zaslonu */
+        }
+        @media (max-width: 600px) { /* Prilagoditve za zaslone, manjše od 600px */
+            h1 {
+                font-size: 1.5em; /* Manjša pisava naslova */
+            }
+            th, td {
+                padding: 8px 10px; /* Manjši notranji razmik */
+                font-size: 0.9em; /* Manjša pisava v celicah */
+            }
+            .logo {
+                max-width: 150px; /* Manjši logotip */
+            }
+            .qr-code {
+                max-width: 200px; /* Manjša QR koda */
+                padding: 5px; /* Manjši notranji razmik */
+            }
+            table {
+                max-width: 100%; /* Polna širina tabele */
+            }
+            a {
+                font-size: 0.9em; /* Manjša pisava povezave */
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Poskeniraj QR kodo</h1>
+    <h1>Poskeniraj QR kodo in iz seznama izberi eno pesem.</h1>
     <p>
-        <img src="data:image/png;base64, {{ qr_code }}" alt="QR Code">
+        <img src="data:image/png;base64, {{ qr_code }}" alt="QR Code" class="qr-code">
     </p>
 
     <h1>Čakalna vrsta</h1>
@@ -33,14 +116,20 @@
             </tr>
         </thead>
         <tbody>
-            <p>Vaš izbor je bil zabeležen</p>
             {% for pesem in cakalna_vrsta %}
             <tr>
-                <td>{{ pesem["naslov"] }}</td>  <!-- Popravljeno: uporabite pesem["naslov"] -->
+                <td>{{ pesem["naslov"] }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     <a href="/pesem">Nazaj na seznam pesmi</a>
+
+    <script>
+        // Osveži stran vsake 5 sekund
+        setInterval(function() {
+            location.reload();
+        }, 5000);
+    </script>
 </body>
 </html>

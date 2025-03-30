@@ -1,116 +1,100 @@
 from flask import Flask, request, jsonify, render_template
 import qrcode
-import io
-import base64
-import json
-import pygame
-import time
-import threading
+import io # delo z vzhodno-izhodnimi podatki v pomnilniku
+import base64 # za kodiranje binarnih podatkov (slik) v base64 format za HTML
+from tinydb import TinyDB, Query
+import pygame # za predvajanje zvoka
+import time 
+import threading # za izvajanje več nalog hkrati
+import os
 
 app = Flask(__name__)
 
-pygame.mixer.init() #inicializiraj pygame mixerja za predvajanje zvoka
+pygame.mixer.init() # inicializacija pygame mixerja za predvajanje zvoka
+
+# inicializacija tinydb baz
+baza_pesmi = TinyDB('vse_pesmi.json')  # baza za vse pesmi
+cakalna_vrsta_baza = TinyDB('cakalna_vrsta.json')  # baza za čakalno vrsto
+
 
 @app.route("/")
 def qr():
-    # Generiranje QR kode
+    # generiranje qr kode
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
-    qr.add_data("http://127.0.0.1:5000/pesem")  # Dodaj URL v QR kodo
-    qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")  # Ustvari sliko QR kode
-    img_buffer = io.BytesIO()  # Pomnilnik za sliko
-    img.save(img_buffer, format="PNG")  # Shrani sliko v pomnilnik
-    img_niz = base64.b64encode(img_buffer.getvalue()).decode("utf-8")  # Prekodi v base64 za HTML
+    qr.add_data("http://192.168.0.23:5000/pesem")  # dodaj url v qr kodo
+    qr.make(fit=True) # za prilagajanje qr kode
+    img = qr.make_image(fill_color="black", back_color="white")  # ustvari sliko qr kode
+    img_buffer = io.BytesIO()  # pomnilnik za sliko
+    img.save(img_buffer, format="PNG")  # shrani sliko v pomnilnik
+    img_niz = base64.b64encode(img_buffer.getvalue()).decode("utf-8")  # spremeni v base64 za html
 
-    # Preberi čakalno vrsto iz datoteke
-    with open("cakalna_vrsta.json", "r") as datoteka:
-        vsebina = datoteka.read().strip()
-        if vsebina:
-            cakalna_vrsta = json.loads(vsebina)
-        else:
-            cakalna_vrsta = []
+    
+    cakalna_vrsta = cakalna_vrsta_baza.all()  # pridobi vse pesmi iz čakalne vrste
 
-    # Renderiranje začetne strani z QR kodo in čakalno vrsto
+    
     return render_template('index.html', qr_code=img_niz, cakalna_vrsta=cakalna_vrsta)
-
 
 @app.route("/pesem")
 def prikazi_pesmi():
-    with open("vse_pesmi.json", "r") as datoteka:
-        pesmi = json.load(datoteka) # Prebere vse pesmi iz JSON datoteke
+    pesmi = baza_pesmi.all()  # prebere vse pesmi iz baze vseh pesmi
     return render_template("pesem.html", pesmi=pesmi)
 
 @app.route("/predvajaj/<int:pesem_id>", methods=['POST']) 
 def predvajaj_pesmi(pesem_id):
-    with open("vse_pesmi.json", "r", encoding="utf-8") as datoteka:
-        vse_pesmi = json.load(datoteka) # Prebere vse pesmi iz baze vseh pesmi
-
-    with open('cakalna_vrsta.json', 'r', encoding='utf-8') as cilj_datoteka:
-        vsebina = cilj_datoteka.read().strip() # prebere vsebino datoteke iz baze cakalne vrste 
-        if vsebina:
-            cakalna_vrsta = json.loads(vsebina) # pretvori v JSON
-        else:
-            cakalna_vrsta = [] # če je prazna naredi seznam
-
-    izbrana_pesem = None
-    for pesem in vse_pesmi:
-        if pesem["id"] == pesem_id:
-            izbrana_pesem = pesem # gre skozi vse pesmi in izbere tisto ki ima enak id kot izbrana pesem
-            break  
+    pesem = Query() # Query objekt za iskanje pesmi
+    izbrana_pesem = baza_pesmi.get(pesem.id == pesem_id)  # gre skozi vse pesmi in izbere tisto, ki ima enak id kot izbrana pesem
 
     if izbrana_pesem:
-        cakalna_vrsta.append(izbrana_pesem) # doda izbrano pesem v čakalno vrsto
+        # naredi podatke za pesem, ki jo je uporabnik izbral
+        nova_pesem = {
+            "id": izbrana_pesem["id"],
+            "naslov": izbrana_pesem["naslov"],
+            "avtor": izbrana_pesem["avtor"],
+            "datoteka": izbrana_pesem["datoteka"]
+        }
+        cakalna_vrsta_baza.insert(nova_pesem)  # doda izbrano pesem v čakalno vrsto
+        
+        if not pygame.mixer.music.get_busy():  # če se nič ne predvaja
+            threading.Thread(target=predvajaj_naslednjo).start()  # začni predvajati naslednjo pesem v čakalni vrsti, thread je potreben, da se ne blokira flask server, AI
 
+        return jsonify({"message": f"pesem '{izbrana_pesem['naslov']}' dodana v čakalno vrsto."})
     
-    with open("cakalna_vrsta.json", "w", encoding="utf-8") as datoteka:
-        json.dump(cakalna_vrsta, datoteka, indent=4, ensure_ascii=False) # Shrani posodobljeno čakalno vrsto, ascii je zato da shrani tudi šumnike
-
-    
-    if not pygame.mixer.music.get_busy(): # če se nič ne predvaja
-        threading.Thread(target=predvajaj_naslednjo).start() # Začni predvajati naslednjo pesem v čakalni vrsti, thread je potreben, da se ne blokira Flask server, AI
-
-    return jsonify({"message": f"Pesem '{izbrana_pesem['naslov']}' dodana v čakalno vrsto."})
+    return jsonify({"error": "pesem ni najdena"}), 404
 
 def predvajaj_naslednjo():
     while True:
-        with open("cakalna_vrsta.json", "r", encoding="utf-8") as datoteka:
-            vsebina = datoteka.read().strip()
-            if vsebina:
-                cakalna_vrsta = json.loads(vsebina)
-            else:
-                cakalna_vrsta = []
-
-        if not cakalna_vrsta:
-            return jsonify({"message": "Čakalna vrsta je prazna."})
-
+        cakalna_vrsta = cakalna_vrsta_baza.all()  # prebere vsebino iz baze čakalne vrste
         
-        pesem = cakalna_vrsta[0] # pesem je prva iz čakalne vrste
+        if not cakalna_vrsta:  # če je prazna
+            return jsonify({"message": "čakalna vrsta je prazna."})
+
+        pesem = cakalna_vrsta[0]  # pesem je prva iz čakalne vrste
         
         
-        cakalna_vrsta.pop(0) # Odstrani to pesem iz čakalne vrste
-        with open("cakalna_vrsta.json", "w", encoding="utf-8") as datoteka:
-            json.dump(cakalna_vrsta, datoteka, indent=4, ensure_ascii=False) # Shrani posodobljeno čakalno vrsto
 
+        cakalna_vrsta_baza.remove(doc_ids=[cakalna_vrsta[0].doc_id]) # odstrani to pesem iz čakalne vrste
         
-        pygame.mixer.music.load(pesem["datoteka"]) # naloži pesem iz baze pesmi v čakalni vrsti
-        pygame.mixer.music.play() # Predvaja to pesem
+        pygame.mixer.music.load(pesem["datoteka"])  # naloži pesem iz baze pesmi v čakalni vrsti
+        pygame.mixer.music.play()  # predvaja to pesem
 
-        # Čakaj na konec pesmi
-        while pygame.mixer.music.get_busy(): # get_busy preveri ali se pesem predvaja
+
+        while pygame.mixer.music.get_busy():  # get_busy preveri ali se pesem predvaja
             time.sleep(1)  # počaka sekundo in ponovno preveri
 
-        # pesem je končana, počaka sekundo pred predvajanjem naslednje pesmi
-        time.sleep(1)
-        pygame.mixer.music.stop()  # Prepreči morebitne napake pri ponovnem predvajanju
-
         
-        if len(cakalna_vrsta) > 0: # Preveri, če je v čakalni vrsti še kaj pesmi in nato zažene funkcijo za predvajanje naslednje pesmi
-            predvajaj_naslednjo()
+        time.sleep(1) # počaka sekundo pred predvajanjem naslednje pesmi
+        pygame.mixer.music.stop()  # prepreči morebitne napake pri ponovnem predvajanju
+
+
+        if cakalna_vrsta_baza.all():  # če je v čakalni vrsti še kaj pesmi, nadaljuje z naslednjo
+            continue
+        else:
+            break
 
 @app.route("/hvala")
 def hvala():
     return render_template("hvala.html")
 
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    # omogoči dostop iz vseh ip-jev za lokalno omrežje
+    app.run(host='0.0.0.0', port=5000, debug=True)
