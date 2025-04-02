@@ -26,10 +26,6 @@ Jukebox je interaktivna glasbena platforma, ki gostom v barih in lokalih omogoč
 - **Sistem sporočil**: gostje lahko pošljejo kratke predloge ali pozdrave, ki se prikažejo na zaslonu ob izbrani pesmi (npr. "Ta gre za Mojco!").
 - **Preverjeni uporabniki**: opcija povezave s telefonsko številko za preprečevanje zlorab.
 
-## Dodatne funkcionalnosti
-- **Vremenska napoved**: na zaslonu se lahko prikazuje vreme (npr. "Dež zunaj, zabava znotraj!"), kar doda kontekst vzdušju.
-- **API za glasbene storitve**: povezava s platformami, kot je Spotify, za širši izbor pesmi.
-
 ## Prednosti
 - Gostje aktivno soustvarjajo glasbeno vzdušje lokala.
 - Prihranek pri najemu DJ-ja za manjše dogodke.
