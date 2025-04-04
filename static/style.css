@@ -1,0 +1,87 @@
+/* Osnovni stili za body */
+body {
+    background-color: #EF4B62; /* Rdeče ozadje, enako kot v prejšnji strani */
+    color: #F6F4F4; /* Bela barva besedila */
+    font-family: Arial, sans-serif; /* Enak font */
+    margin: 0;
+    padding: 20px;
+    display: flex; /* Flexbox za centriranje */
+    flex-direction: column; /* Navpična razporeditev */
+    align-items: center; /* Centriranje vodoravno */
+    height: 100vh; /* Celotna višina zaslona */
+}
+
+/* Stili za naslov h1 */
+h1 {
+    font-size: 50px; /* Enaka velikost kot <p> na prejšnji strani */
+    margin-bottom: 20px; /* Razmik pod naslovom */
+    text-align: center; /* Centriranje besedila */
+    border: 2px solid #FFFFFF; /* Bela obroba, enaka kot pri <p> */
+    border-radius: 15px; /* Zaobljeni robovi */
+    padding: 10px; /* Notranji razmik */
+}
+
+/* Stili za tabelo */
+table {
+    width: 100%;
+    max-width: 600px; /* Omejitev širine tabele */
+    border-collapse: separate; /* Omogoča zaobljene robove */
+    border-spacing: 0; /* Odstrani privzeti razmik */
+    background-color: rgba(246, 244, 244, 0.1); /* Prosojno belo ozadje */
+    border-radius: 10px; /* Zaobljeni robovi */
+    overflow: hidden; /* Poskrbi, da vsebina spoštuje zaobljene robove */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Enaka senca kot prej */
+    margin: 0 auto; /* Centriranje tabele */
+    max-height: 60vh; /* Omejitev višine tabele */
+    overflow-y: auto; /* Dodaj drsnik, če je vsebine preveč */
+}
+
+/* Stili za celice tabele */
+th, td {
+    padding: 15px; /* Enak notranji razmik kot prej */
+    text-align: center; /* Centriranje besedila */
+}
+
+/* Stili za glavo tabele */
+th {
+    background-color: rgba(246, 244, 244, 0.2); /* Prosojno belo ozadje za glavo */
+    font-weight: bold; /* Krepko besedilo */
+    border-bottom: 2px solid #F6F4F4; /* Bela črta pod glavo */
+}
+
+/* Stili za vrstice tabele */
+td {
+    border-bottom: 1px solid rgba(246, 244, 244, 0.3); /*   /* Lighter border for rows */
+}
+
+/* Odstrani spodnjo obrobo za zadnjo vrstico */
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* Hover efekt za vrstice */
+tr:hover {
+    background-color: rgba(246, 244, 244, 0.15); /* Enak hover efekt */
+    transition: background-color 0.3s ease; /* Gladka tranzicija */
+}
+
+/* Stili za celice z razredom naslov-celica (klikabilne celice) */
+.naslov-celica {
+    cursor: pointer; /* Kazalec, ki nakazuje, da je element klikabilen */
+}
+
+/* Stili za povezave */
+a {
+    color: #F6F4F4; /* Bela barva povezav */
+    text-decoration: none;
+    font-weight: bold; /* Krepko besedilo */
+    display: block; /* Povezava kot blok za centriranje */
+    text-align: center; /* Centriranje besedila */
+    margin-top: 20px; /* Razmik nad povezavo */
+}
+
+/* Hover efekt za povezave */
+a:hover {
+    text-decoration: underline; /* Podčrtaj ob prehodu miške */
+    color: #FFFFFF; /* Svetlejša bela barva ob prehodu */
+}
