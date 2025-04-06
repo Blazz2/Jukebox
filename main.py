@@ -13,6 +13,8 @@ app = Flask(__name__)
 baza_pesmi = TinyDB('vse_glasbe.json')
 cakalna_vrsta_baza = TinyDB('cakalna_vrsta.json')
 trenutna_pesem_baza = TinyDB('trenutna_pesem.json')
+vnosi_pesmi = TinyDB('vnos_pesmi.json')
+
 
 # napolni bazo, ko se prorgram začne
 if not trenutna_pesem_baza.all():
@@ -45,7 +47,7 @@ def zacetna_stran():
 @app.route("/pesmi")
 def pesmi():
     # pošlje bazo vseh pesmi za predvajanje
-    pesmi = baza_pesmi.all()
+    pesmi = sorted(baza_pesmi.all(), key=lambda x: x['naslov'].lower())
     return render_template("pesmi.html", pesmi=pesmi)
 
 @app.route("/v_cakalno_vrsto", methods=["POST"])
@@ -110,6 +112,13 @@ def predvajaj_naslednjo():
 @app.route("/zabelezeno")
 def zabelezeno():
     # za prikaz strani potem, ko uporabnik izbere pesem
+    return render_template("zabelezeno.html")
+
+
+@app.route("/dodaj_pesem", methods=["POST"])
+def dodaj_pesem():
+    pesem = request.form['pesem']
+    vnosi_pesmi.insert({"pesem": pesem})
     return render_template("zabelezeno.html")
 
 def izprazni_bazo():
