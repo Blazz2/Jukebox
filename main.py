@@ -30,11 +30,13 @@ pygame.mixer.init()
 @app.route("/")
 def zacetna_stran():
     # generiranje QR kode z lokalnim IP-jem in prikaz tabele z čakalno vrsto ter trenutno pesmijo 
+    static_mapa = os.path.join(os.path.dirname(__file__), 'static')
+    qr_pot = os.path.join(static_mapa, 'qr_slika.png')
     hostname = socket.gethostname()
     local_ip = socket.gethostbyname(hostname)
     url = f'http://{local_ip}:5000/pesmi'
     qr = qrcode.make(url)
-    qr.save("static/qr_slika.png")
+    qr.save(qr_pot)
     cakalna_vrsta = cakalna_vrsta_baza.all()
     trenutna = trenutna_pesem_baza.all()
     trenutna_pesem = trenutna[0]['naslov']
