@@ -22,7 +22,7 @@ if not trenutna_pesem_baza.all():
 
 # napolni 10x, da bo tabela vedno imela 10 vrstic
 if len(cakalna_vrsta_baza.all()) < 11:
-    for x in range(10 - len(cakalna_vrsta_baza.all())):
+    for x in range(5 - len(cakalna_vrsta_baza.all())):
         cakalna_vrsta_baza.insert({"id": 0, "naslov": "Ni izbrane pesmi", "avtor": "", "datoteka": ""})
 
 
@@ -83,7 +83,7 @@ def predvajaj_naslednjo():
             break
         # po vsakem koncu pesmi se napolni tabelo z "Ni izbrane pesmi" da bo vedno 10 vrstic
         if len(cakalna_vrsta_baza.all()) < 11:
-            for x in range(11 - len(cakalna_vrsta_baza.all())):
+            for x in range(6 - len(cakalna_vrsta_baza.all())):
                 cakalna_vrsta_baza.insert({"id": 0, "naslov": "Ni izbrane pesmi", "avtor": "", "datoteka": ""})
         # pot do datoteke pesmi
         pesem = cakalna_vrsta[0]
@@ -121,13 +121,18 @@ def dodaj_pesem():
     vnosi_pesmi.insert({"pesem": pesem})
     return render_template("zabelezeno.html")
 
+@app.route("/prepozno")
+def prepozno():
+    return render_template("prepozno.html")
+
 def izprazni_bazo():
     # za izbrisanje baz ko se program ugasne
     cakalna_vrsta_baza.truncate()
     trenutna_pesem_baza.truncate()
-
+    vnosi_pesmi.truncate()
 # izvede izprazni_bazo() ko se program ugasne
 atexit.register(izprazni_bazo)
 
+print("hello")
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)

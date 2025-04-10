@@ -8,17 +8,21 @@
 </head>
 <body>
     <h1>Seznam pesmi</h1>
+    <div id="timer-bar-container">
+        <div id="timer-bar"></div>
+    </div>
+    <p id="timer-text">Preostali čas: 2:00</p>
     <table>
         <thead>
             <tr>
-                <th>ID</th>
+                <th>#</th>
                 <th>Naslov</th>
             </tr>
         </thead>
         <tbody>
             {% for pesem in pesmi %}
             <tr>
-                <td>{{ pesem.id }}</td>
+                <td>{{ loop.index }}</td>
                 <td onclick="handleClick(this)" class="naslov-celica" data-id="{{ pesem.id }}">{{ pesem.naslov }}</td>
             </tr>
             {% endfor %}
@@ -26,7 +30,7 @@
     </table>
     <br>
     <form method="POST" action="/dodaj_pesem">
-        <input type="text" name="pesem" placeholder="Pesem, ki bi rad, da se predvaja">
+        <input type="text" name="pesem" class="pesem-input" placeholder="Pesem, ki bi rad, da se predvaja">
     </form>
 
     <a href="/">Nazaj</a>
