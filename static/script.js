@@ -25,7 +25,7 @@ function handleClick(element) { // funkcija se izvede, ko nekdo klikne na pesem 
 }
 
 $(document).ready(function() {
-    const totalTime = 2 * 60; // 2 minuti v sekundah
+    const totalTime = 60; // 2 minuti v sekundah
     let timeLeft = totalTime;
 
     // Posodobi časovnik vsako sekundo

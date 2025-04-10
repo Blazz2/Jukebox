@@ -117,12 +117,14 @@ def zabelezeno():
 
 @app.route("/dodaj_pesem", methods=["POST"])
 def dodaj_pesem():
+    # dobi naslov pesmi, ki ga je vnesel uporabnik in ga shranil v bazo
     pesem = request.form['pesem']
     vnosi_pesmi.insert({"pesem": pesem})
     return render_template("zabelezeno.html")
 
 @app.route("/prepozno")
 def prepozno():
+    # pokaze to spletno stran, ce je zmanjkalo casa
     return render_template("prepozno.html")
 
 def izprazni_bazo():
@@ -130,6 +132,7 @@ def izprazni_bazo():
     cakalna_vrsta_baza.truncate()
     trenutna_pesem_baza.truncate()
     vnosi_pesmi.truncate()
+
 # izvede izprazni_bazo() ko se program ugasne
 atexit.register(izprazni_bazo)
 
