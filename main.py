@@ -133,6 +133,5 @@ def izprazni_bazo():
 # izvede izprazni_bazo() ko se program ugasne
 atexit.register(izprazni_bazo)
 
-print("hello")
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
