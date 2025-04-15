@@ -6,26 +6,18 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>Jukebox</title>
-    <script>
-        // Osveži stran vsake 10 sekund
-        setTimeout(function () {
-            location.reload();
-        }, 10000);
-    </script>
 </head>
 <body>
     <div class="image-container">
         <img src="{{ url_for('static', filename=slika) }}" alt="QR Code" class="qr-code">
-        <img src="{{ url_for('static', filename='slike/logo.png') }}" alt="Logo" class="logo">
+        <img src="{{ url_for('static', filename='slike/logo.png') }}" alt="logo" class="logo">
     </div>
 
-    Trenutno se predvaja:
-
     <p>
-        <span class="cd-gif"><img src="{{ url_for('static', filename='slike/cd.gif') }}" alt="CD GIF"></span>
-        <span class="trenutna-pesem">{{ trenutna_pesem }}</span>
+        <span class="cd-gif"><img src="{{ url_for('static', filename='slike/cd.gif') }}" alt="cd gif"></span>
+        <span class="trenutna-pesem">{{trenutna_pesem}}</span>
     </p>
-
+    
     <table>
         <thead>
             <tr>
@@ -44,11 +36,15 @@
             {% endfor %}
         </tbody>
     </table>
-
-    <p class="code-display">
-        <strong>Koda za izbiro pesmi:</strong> <span class="code">{{ koda }}</span>
-    </p>
-
+    
     <a href="/pesmi">Pojdi na pesmi</a>
+    <br>
+    
+    <!-- da se osveži stran na nekaj časa -->
+    <script>         
+        setTimeout(function () {
+            location.reload();
+        }, 10000);
+    </script>
 </body>
 </html>

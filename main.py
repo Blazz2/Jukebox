@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify
 from tinydb import TinyDB, Query
 import pygame
 import threading
@@ -7,41 +7,23 @@ import qrcode
 import socket
 import os
 import atexit
-from datetime import datetime, timedelta
-import random
-import string
-from flask_session import Session
 
 app = Flask(__name__)
-
-# nastavitev seje
-app.config['SECRET_KEY'] = "skrivni ključ" 
-app.config['SESSION_TYPE'] = 'filesystem'
-
-# inicializacija seje
-Session(app)
-
 # inicializacija baz
 baza_pesmi = TinyDB('vse_glasbe.json')
 cakalna_vrsta_baza = TinyDB('cakalna_vrsta.json')
 trenutna_pesem_baza = TinyDB('trenutna_pesem.json')
 vnosi_pesmi = TinyDB('vnos_pesmi.json')
-baza_kod = TinyDB('baza_kod.json')
 
 
 # napolni bazo, ko se prorgram začne
 if not trenutna_pesem_baza.all():
     trenutna_pesem_baza.insert({"id": 0, "naslov": "Ni trenutne pesmi", "avtor": "", "datoteka": ""})
 
-# napolni 10x, da bo tabela vedno imela 5x vrstic
+# napolni 10x, da bo tabela vedno imela 10 vrstic
 if len(cakalna_vrsta_baza.all()) < 11:
     for x in range(5 - len(cakalna_vrsta_baza.all())):
         cakalna_vrsta_baza.insert({"id": 0, "naslov": "Ni izbrane pesmi", "avtor": "", "datoteka": ""})
-
-
-def generiraj_kodo():
-    #generira naključno 4 mestno kodo
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
 
 
 # inicializacija pygame mixerja za predvajanje zvoka
@@ -57,46 +39,16 @@ def zacetna_stran():
     url = f'http://{local_ip}:5000/pesmi'
     qr = qrcode.make(url)
     qr.save(qr_pot)
-
-    # preveri ali obstaja veljavna koda
-    kode = Query()
-    trenuten_cas = datetime.now()
-    veljavna_koda = baza_kod.get(kode.iztekla > trenuten_cas.isoformat())
-    if not veljavna_koda:
-        # generira novo kodo in jo shrani v bazo
-        nova_koda = generiraj_kodo()
-        iztekla = trenuten_cas + timedelta(minutes=3)
-        baza_kod.truncate()
-        baza_kod.insert({"koda": nova_koda, "iztekla": iztekla.isoformat()})
-        koda = nova_koda
-    else:
-        koda = veljavna_koda['koda']
-
     cakalna_vrsta = cakalna_vrsta_baza.all()
     trenutna = trenutna_pesem_baza.all()
     trenutna_pesem = trenutna[0]['naslov']
-    return render_template("index.html", slika="qr_slika.png", cakalna_vrsta=cakalna_vrsta, trenutna_pesem=trenutna_pesem, koda=koda)
+    return render_template("index.html", slika="qr_slika.png", cakalna_vrsta=cakalna_vrsta, trenutna_pesem=trenutna_pesem)
 
-@app.route("/pesmi", methods=["GET", "POST"])
+@app.route("/pesmi")
 def pesmi():
-    # uporabnik vnese kodo
-    if request.method =="POST":
-        uporabniska_koda = request.form['koda']
-        kode = Query()
-        trenutni_cas = datetime.now()
-        pravilna_koda = baza_kod.get((kode.koda == uporabniska_koda) & (kode.iztekla > trenutni_cas.isoformat()))
-
-        if not pravilna_koda:
-            return render_template("pesmi.html", napaka="Koda je napačna ali je potekla.", pesmi=[], show_code_form=True)
-        
-        # shrani kodo skupaj s časom, če je veljavna 
-        session['uporabniska_koda'] = uporabniska_koda
-        session['cas_kode'] = trenutni_cas.isoformat()
-        # pošlje bazo vseh pesmi za predvajanje
-        pesmi = sorted(baza_pesmi.all(), key=lambda x: x['naslov'].lower())
-        return render_template("pesmi.html", pesmi=pesmi, show_code_form=False)
-    # GET zahteva prikazuje formo za vnos kode
-    return render_template("pesmi.html", pesmi=[], show_code_form=True)
+    # pošlje bazo vseh pesmi za predvajanje
+    pesmi = sorted(baza_pesmi.all(), key=lambda x: x['naslov'].lower())
+    return render_template("pesmi.html", pesmi=pesmi)
 
 @app.route("/v_cakalno_vrsto", methods=["POST"])
 def shrani():
@@ -104,27 +56,6 @@ def shrani():
     pesem = Query()
     data = request.get_json()
     pesem_id = int(data['id'])
-    uporabniska_koda = data.get('koda')
-
-    # preveri ali je koda še veljavna (1 minuta od vnosa) 
-    cas_kode = session.get('cas_kode')
-    if not cas_kode or not uporabniska_koda:
-        return jsonify({"error": "Koda je napačna ali je potekla."}), 400
-
-    try:
-        cas_kode = datetime.fromisoformat(cas_kode)
-        trenutni_cas = datetime.now()
-        if trenutni_cas > cas_kode + timedelta(minutes=1):
-            return jsonify({"error": "Koda je potekla (1 minuta). Počakaj na novo kodo"}), 400
-    except ValueError:
-        return jsonify({"error": "Neveljaven čas seje."}), 400
-    
-    # preveri ali je uporabnik že dodal pesem z to kodo
-    uporabljene_kode = session.get('uporabljene_kode', [])
-    if uporabniska_koda in uporabljene_kode:
-        return jsonify({"error": "S to kodo si že izbral pesem. Počakaj na novo kodo"}), 429
-
-    # doda pesem v čakalno vrsto
     izbrana_pesem = baza_pesmi.get(pesem.id == pesem_id)
     if izbrana_pesem:
         dodana_pesem = {
@@ -136,18 +67,12 @@ def shrani():
         cakalna_vrsta = cakalna_vrsta_baza.search(pesem.naslov == "Ni izbrane pesmi")
         if cakalna_vrsta:
             cakalna_vrsta_baza.update(dodana_pesem, doc_ids=[cakalna_vrsta[0].doc_id])
-            # preveri ali je uporabnik že uporabil kodo
-            uporabljene_kode.append(uporabniska_koda)
-            session['uporabljene_kode'] = uporabljene_kode
-            # počisti sejo za naslednjo kodo
-            session.pop('uporabniska_koda', None)
-            session.pop('cas_kode', None)
-            # za predvajanje naslednje pesmi ko se trenutna konča
-            if not pygame.mixer.music.get_busy():
-                threading.Thread(target=predvajaj_naslednjo).start() # thread je potreben, da se pesem predvaja v ozadju, AI
-            return jsonify({"message": f"Pesem '{izbrana_pesem['naslov']}' dodana v čakalno vrsto."})
         else:
-            return jsonify({"error": "Čakalna vrsta je polna"}), 400     
+            return jsonify({"error": "Čakalna vrsta je polna"}), 400
+        # za predvajanje naslednje pesmi ko se trenutna konča
+        if not pygame.mixer.music.get_busy():
+            threading.Thread(target=predvajaj_naslednjo).start() # thread je potreben, da se pesem predvaja v ozadju, AI
+        return jsonify({"message": f"Pesem '{izbrana_pesem['naslov']}' dodana v čakalno vrsto."})
     return jsonify({"error": "Pesem ni najdena"}), 404
 
 def predvajaj_naslednjo():
@@ -156,7 +81,7 @@ def predvajaj_naslednjo():
         cakalna_vrsta = cakalna_vrsta_baza.all()
         if not cakalna_vrsta:
             break
-        # po vsakem koncu pesmi se napolni tabelo z "Ni izbrane pesmi" da bo vedno 5 vrstic
+        # po vsakem koncu pesmi se napolni tabelo z "Ni izbrane pesmi" da bo vedno 10 vrstic
         if len(cakalna_vrsta_baza.all()) < 11:
             for x in range(6 - len(cakalna_vrsta_baza.all())):
                 cakalna_vrsta_baza.insert({"id": 0, "naslov": "Ni izbrane pesmi", "avtor": "", "datoteka": ""})
@@ -207,7 +132,6 @@ def izprazni_bazo():
     cakalna_vrsta_baza.truncate()
     trenutna_pesem_baza.truncate()
     vnosi_pesmi.truncate()
-    baza_kod.truncate()
 
 # izvede izprazni_bazo() ko se program ugasne
 atexit.register(izprazni_bazo)
