@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pesmi</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Seznam pesmi</h1>
+    {% if show_code_form %}
+        {% if napaka %}
+            <p style="color: red;">{{ napaka }}</p>
+        {% endif %}
+        <form method="POST" action="{{ url_for('pesmi') }}">
+            <label for="koda">Vnesi kodo z zaslona:</label>
+            <input type="text" id="koda" name="koda" required>
+            <button type="submit">Potrdi</button>
+        </form>
+    {% else %}
+        <p id="timer-text">Čas za izbiro pesmi: 1:00</p>
+        <div id="timer-bar-container">
+            <div id="timer-bar"></div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Naslov</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pesem in pesmi %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td onclick="handleClick(this)" class="naslov-celica" data-id="{{ pesem.id }}" data-naslov="{{ pesem.naslov }}">{{ pesem.naslov }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <form method="POST" action="/dodaj_pesem">
+            <input type="text" name="pesem" class="pesem-input" placeholder="Pesem, ki bi rad, da se predvaja">
+        </form>
+
+        <script>
+            function handleClick(element) {
+                // pridobi element, ki ga je izbral uporabnik 
+                var id = $(element).data('id');
+                var naslov = $(element).data('naslov');
+                // pridobi kodo iz flask seje 
+                var koda = "{{ session['uporabniska_koda'] | safe }}";
+                var potrditev = confirm("Ali ste prepričani, da želite izbrati: " + naslov + "?");
+                if (potrditev) {
+                    // pošlje izbrano pesem in kodo na strežnik
+                    $.ajax({
+                        url: "/v_cakalno_vrsto",
+                        method: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({ id: id, koda: koda }),
+                        success: function(response) {
+                            console.log("Uspešno poslal podatke:", response);
+                            window.location.href = "/zabelezeno";
+                        },
+                        error: function(error) {
+                            console.error("Napaka pri pošiljanju:", error);
+                            alert("Napaka: " + (error.responseJSON?.error || "Neznana napaka"));
+                        }
+                    });
+                } else {
+                    console.log("Uporabnik je preklical izbiro.");
+                }
+            }
+
+            $(document).ready(function() {
+                // nastavi časovnik na 60 sekund
+                const totalTime = 60; 
+                let timeLeft = totalTime;
+
+                // Posodobi časovnik vsako sekundo
+                const timer = setInterval(function() {
+                    timeLeft--;
+
+                    // Posodobi širino časovnega traku
+                    const percentage = (timeLeft / totalTime) * 100;
+                    $('#timer-bar').css('width', percentage + '%');
+
+                    // Posodobi barvo časovnega traku (od zelene do rdeče)
+                    const hue = (timeLeft / totalTime) * 120; // HSL odtenek: 120 (zelena) do 0 (rdeča)
+                    $('#timer-bar').css('background-color', `hsl(${hue}, 100%, 50%)`);
+
+                    // Posodobi besedilo časovnika
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    $('#timer-text').text(`Preostali čas: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`);
+
+                    // Preusmeri, ko čas poteče
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        alert('Čas je potekel!');
+                        window.location.href = '/prepozno';
+                    }
+                }, 1000);
+
+                // Prepreči osvežitev strani
+                $(document).on('keydown', function(e) {
+                    if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+                        e.preventDefault();
+                        alert('Osvežitev ni dovoljena! Časovnik se nadaljuje.');
+                    }
+                });
+            });
+        </script>
+    {% endif %}
+
+    <a href="/">Nazaj</a>
+</body>
+</html>

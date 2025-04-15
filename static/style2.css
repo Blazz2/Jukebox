@@ -1,0 +1,21 @@
+/* Osnovni stili za body */
+body {
+    background-color: #EF4B62; /* Rdeče ozadje, enako kot na prejšnjih straneh */
+    color: #F6F4F4; /* Bela barva besedila */
+    font-family: Arial, sans-serif; /* Enak font */
+    margin: 0;
+    padding: 20px;
+    display: flex; /* Flexbox za centriranje */
+    flex-direction: column; /* Navpična razporeditev */
+    align-items: center; /* Centriranje vodoravno */
+    justify-content: center; /* Centriranje navpično */
+    min-height: 100vh; /* Celotna višina zaslona, a omogoča večjo vsebino */
+    overflow: hidden;;
+}
+
+/* Stili za <p> element */
+p {
+    font-size: 50px; /* Enaka velikost pisave kot na prejšnjih straneh */
+    margin-bottom: 20px; /* Razmik pod besedilom */
+    text-align: center; /* Centriranje besedila */
+}

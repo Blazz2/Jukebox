@@ -1,9 +1,0 @@
-{
-    "_default": {
-        "1": {"id": 1, "naslov": "APT", "avtor": "ROSE & Bruno Mars", "datoteka": "E:/jukebox_kopija/muske/ROSE & Bruno Mars - APT. (Official Music Video).mp3"},
-        "2": {"id": 2, "naslov": "Die With A Smile", "avtor": "Lady Gaga, Bruno Mars", "datoteka": "E:/jukebox_kopija/muske/Lady Gaga, Bruno Mars - Die With A Smile (Official Music Video).mp3"},
-        "3": {"id": 3, "naslov": "Counting Stars", "avtor": "OneRepublic", "datoteka": "E:/jukebox_kopija/muske/OneRepublic - Counting Stars.mp3"},
-        "4": {"id": 4, "naslov": "All of Me", "avtor": "OneRepublic", "datoteka": "E:/jukebox_kopija/muske/John Legend - All of Me (Official Video).mp3"},
-        "5": {"id": 5, "naslov": "Short Song (English Song)", "avtor": "OneRepublic", "datoteka": "E:/jukebox_kopija/muske/Short Song (English Song) [W Lyrics] 30 seconds.mp3"}
-    }
-}

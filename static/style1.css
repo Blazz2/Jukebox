@@ -1,0 +1,114 @@
+body {
+    background-color: #EF4B62;
+    color: #F6F4F4;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    max-width: 600px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: rgba(246, 244, 244, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+th, td {
+    padding: 15px;
+    text-align: center;
+}
+
+th {
+    background-color: rgba(246, 244, 244, 0.2);
+    font-weight: bold;
+    border-bottom: 2px solid #F6F4F4;
+}
+
+td {
+    border-bottom: 1px solid rgba(246, 244, 244, 0.3);
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover {
+    background-color: rgba(246, 244, 244, 0.15);
+    transition: background-color 0.3s ease;
+}
+
+a {
+    color: #F6F4F4;
+    text-decoration: none;
+    font-weight: bold;
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #FFFFFF;
+}
+
+p {
+    font-size: 50px;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 2px solid #FFFFFF;
+    border-radius: 15px;
+    padding: 10px;
+    display: flex; /* Dodano za vodoravno poravnavo */
+    align-items: center; /* Vertikalno centriranje */
+    gap: 10px; /* Razmik med GIF-om in besedilom */
+}
+
+.cd-gif img {
+    max-width: 75px; /* Prilagodite velikost GIF-a */
+    height: auto;
+    border-radius: 5px;
+}
+
+.trenutna-pesem {
+    flex: 1; /* Besedilo zavzame preostali prostor */
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    display: block;
+    margin: 0 auto 20px;
+    max-height: 20vh;
+}
+
+.image-container {
+    width: 200%;
+    max-width: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.qr-code {
+    max-width: 200px; /* Adjust size as needed */
+    margin: 0 50px 0 0; /* Right margin to separate from logo */
+}
+
+.logo {
+    max-width: 300px; /* Adjust size as needed */
+    margin: 0;
+}
