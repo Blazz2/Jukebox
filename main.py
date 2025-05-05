@@ -21,28 +21,96 @@ app.config['SESSION_TYPE'] = 'filesystem'
 # inicializacija seje
 Session(app)
 
-# inicializacija baz
-baza_pesmi = TinyDB('vse_glasbe.json')
+# inicializacija baz za shranjevanje
+baza_pesmi = TinyDB('vse_pesmi.json')
+baza_privzetih_pesmi = TinyDB('privzete_glasbe.json')
 cakalna_vrsta_baza = TinyDB('cakalna_vrsta.json')
 trenutna_pesem_baza = TinyDB('trenutna_pesem.json')
 vnosi_pesmi = TinyDB('vnos_pesmi.json')
 baza_kod = TinyDB('baza_kod.json')
 
+# pot do mape muske
+muske_mapa = os.path.join(app.root_path, 'static', 'muske')
 
-# napolni bazo, ko se prorgram začne
+# posodobi bazo vseh pesmi ob zagonu
+if os.path.exists(muske_mapa):
+    # pridobi seznam datotek v mapi in rezultate shrani v množico (set)
+    trenutne_datoteke = {datoteka for datoteka in os.listdir(muske_mapa) if datoteka.endswith('.mp3')}
+    # pridobi seznam datotek v bazi brez poti do datoteke
+    datoteke_v_bazi = {os.path.basename(pesem['datoteka']) for pesem in baza_pesmi.all()}
+    
+    # odstrani pesmi, ki niso več v mapi
+    for pesem in baza_pesmi.all():
+        if os.path.basename(pesem['datoteka']) not in trenutne_datoteke:
+            baza_pesmi.remove(doc_ids=[pesem.doc_id])
+    
+    # doda nove pesmi, ki jih še ni v bazi
+    for datoteka in trenutne_datoteke:
+        if datoteka not in datoteke_v_bazi:
+            # razdeli ime datoteke na avtorja in naslov
+            ime_brez_koncnice = os.path.splitext(datoteka)[0]
+            avtor = "Neznan"
+            naslov = ime_brez_koncnice
+            
+            # preveri, če ime datoteke vsebuje ločilo " - "
+            if " - " in ime_brez_koncnice:
+                deli = ime_brez_koncnice.split(" - ", 1)
+                avtor = deli[0].strip()
+                naslov = deli[1].strip()
+            
+            baza_pesmi.insert({
+                "id": len(baza_pesmi.all()) + 1,
+                "naslov": naslov,
+                "avtor": avtor,
+                "datoteka": os.path.join('muske', datoteka)
+            })
+
+# posodobi bazo privzetih pesmi ob zagonu
+privzete_pesmi_mapa = os.path.join(app.root_path, 'static', 'privzete_pesmi')
+if os.path.exists(privzete_pesmi_mapa):
+    # pridobi seznam datotek v mapi
+    trenutne_privzete = {datoteka for datoteka in os.listdir(privzete_pesmi_mapa) if datoteka.endswith('.mp3')}
+    # pridobi seznam datotek v bazi
+    privzete_v_bazi = {os.path.basename(pesem['datoteka']) for pesem in baza_privzetih_pesmi.all()}
+    
+    # odstrani pesmi, ki niso več v mapi
+    for pesem in baza_privzetih_pesmi.all():
+        if os.path.basename(pesem['datoteka']) not in trenutne_privzete:
+            baza_privzetih_pesmi.remove(doc_ids=[pesem.doc_id])
+    
+    # dodaj nove pesmi, ki jih še ni v bazi
+    for datoteka in trenutne_privzete:
+        if datoteka not in privzete_v_bazi:
+            # razdeli ime datoteke na avtorja in naslov
+            ime_brez_koncnice = os.path.splitext(datoteka)[0]
+            avtor = "Neznan"
+            naslov = ime_brez_koncnice
+            
+            # preveri, če ime datoteke vsebuje ločilo " - "
+            if " - " in ime_brez_koncnice:
+                deli = ime_brez_koncnice.split(" - ", 1)
+                avtor = deli[0].strip()
+                naslov = deli[1].strip()
+            
+            baza_privzetih_pesmi.insert({
+                "id": len(baza_privzetih_pesmi.all()) + 1,
+                "naslov": naslov,
+                "avtor": avtor,
+                "datoteka": os.path.join('privzete_pesmi', datoteka)
+            })
+
+# napolni bazo, ko se program začne
 if not trenutna_pesem_baza.all():
     trenutna_pesem_baza.insert({"id": 0, "naslov": "Ni trenutne pesmi", "avtor": "", "datoteka": ""})
 
-# napolni 10x, da bo tabela vedno imela 5x vrstic
-if len(cakalna_vrsta_baza.all()) < 11:
-    for x in range(5 - len(cakalna_vrsta_baza.all())):
-        cakalna_vrsta_baza.insert({"id": 0, "naslov": "Ni izbrane pesmi", "avtor": "", "datoteka": ""})
-
+# napolni 5x, da bo tabela vedno imela 5 vrstic
+cakalna_vrsta_baza.truncate()
+for _ in range(6):
+    cakalna_vrsta_baza.insert({"id": 0, "naslov": "Ni izbrane pesmi", "avtor": "", "datoteka": ""})
 
 def generiraj_kodo():
-    #generira naključno 4 mestno kodo
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
-
+    #generira naključno 3 mestno kodo
+    return ''.join(random.choices(string.digits, k=3))
 
 # inicializacija pygame mixerja za predvajanje zvoka
 pygame.mixer.init()  
@@ -65,7 +133,7 @@ def zacetna_stran():
     if not veljavna_koda:
         # generira novo kodo in jo shrani v bazo
         nova_koda = generiraj_kodo()
-        iztekla = trenuten_cas + timedelta(minutes=3)
+        iztekla = trenuten_cas + timedelta(minutes=1)
         baza_kod.truncate()
         baza_kod.insert({"koda": nova_koda, "iztekla": iztekla.isoformat()})
         koda = nova_koda
@@ -75,6 +143,18 @@ def zacetna_stran():
     cakalna_vrsta = cakalna_vrsta_baza.all()
     trenutna = trenutna_pesem_baza.all()
     trenutna_pesem = trenutna[0]['naslov']
+    
+    # naključna izbira pesmi iz privzetih pesmi ob zagonu, če ni izbrane
+    if trenutna_pesem == "Ni trenutne pesmi" and baza_privzetih_pesmi.all():
+        nakljucna_pesem = random.choice(baza_privzetih_pesmi.all())
+        cakalna_vrsta_baza.update({
+            "id": nakljucna_pesem["id"],
+            "naslov": nakljucna_pesem["naslov"],
+            "avtor": nakljucna_pesem["avtor"],
+            "datoteka": nakljucna_pesem["datoteka"]
+        }, doc_ids=[cakalna_vrsta[0].doc_id])
+        threading.Thread(target=predvajaj_naslednjo).start()
+
     return render_template("index.html", slika="qr_slika.png", cakalna_vrsta=cakalna_vrsta, trenutna_pesem=trenutna_pesem, koda=koda)
 
 @app.route("/pesmi", methods=["GET", "POST"])
@@ -87,16 +167,16 @@ def pesmi():
         pravilna_koda = baza_kod.get((kode.koda == uporabniska_koda) & (kode.iztekla > trenutni_cas.isoformat()))
 
         if not pravilna_koda:
-            return render_template("pesmi.html", napaka="Koda je napačna ali je potekla.", pesmi=[], show_code_form=True)
+            return render_template("pesmi.html", napaka="Koda je napačna ali je potekla.", pesmi=[], prikazi_vnos_kode=True)
         
         # shrani kodo skupaj s časom, če je veljavna 
         session['uporabniska_koda'] = uporabniska_koda
         session['cas_kode'] = trenutni_cas.isoformat()
         # pošlje bazo vseh pesmi za predvajanje
         pesmi = sorted(baza_pesmi.all(), key=lambda x: x['naslov'].lower())
-        return render_template("pesmi.html", pesmi=pesmi, show_code_form=False)
+        return render_template("pesmi.html", pesmi=pesmi, prikazi_vnos_kode=False)
     # GET zahteva prikazuje formo za vnos kode
-    return render_template("pesmi.html", pesmi=[], show_code_form=True)
+    return render_template("pesmi.html", pesmi=[], prikazi_vnos_kode=True)
 
 @app.route("/v_cakalno_vrsto", methods=["POST"])
 def shrani():
@@ -122,7 +202,7 @@ def shrani():
     # preveri ali je uporabnik že dodal pesem z to kodo
     uporabljene_kode = session.get('uporabljene_kode', [])
     if uporabniska_koda in uporabljene_kode:
-        return jsonify({"error": "S to kodo si že izbral pesem. Počakaj na novo kodo"}), 429
+        return jsonify({"error": "S to kodo si že izbral pesem. Počakaj na novo kodo"}), 429 # 429 - preveč zahtev (Too Many Requests)
 
     # doda pesem v čakalno vrsto
     izbrana_pesem = baza_pesmi.get(pesem.id == pesem_id)
@@ -151,20 +231,15 @@ def shrani():
     return jsonify({"error": "Pesem ni najdena"}), 404
 
 def predvajaj_naslednjo():
-    
     while True:
         cakalna_vrsta = cakalna_vrsta_baza.all()
         if not cakalna_vrsta:
             break
-        # po vsakem koncu pesmi se napolni tabelo z "Ni izbrane pesmi" da bo vedno 5 vrstic
-        if len(cakalna_vrsta_baza.all()) < 11:
-            for x in range(6 - len(cakalna_vrsta_baza.all())):
-                cakalna_vrsta_baza.insert({"id": 0, "naslov": "Ni izbrane pesmi", "avtor": "", "datoteka": ""})
         # pot do datoteke pesmi
         pesem = cakalna_vrsta[0]
         relativna_pot = pesem["datoteka"]
         absolutna_pot = os.path.join(app.root_path, 'static', relativna_pot)
-        #doda izbrano pesem v trenutno pesem bazo in izbriše prejšnjo
+        # doda izbrano pesem v trenutno pesem bazo in izbriše prejšnjo
         pygame.mixer.music.load(absolutna_pot)
         trenutna_pesem_baza.truncate()  
         trenutna_pesem_baza.insert({
@@ -175,7 +250,10 @@ def predvajaj_naslednjo():
         })
         # predvaja pesem in jo odstrani iz čakalne vrste
         pygame.mixer.music.play()
-        cakalna_vrsta_baza.remove(doc_ids=[pesem.doc_id]) 
+        cakalna_vrsta_baza.remove(doc_ids=[pesem.doc_id])
+        # po vsakem koncu pesmi se napolni tabelo z "Ni izbrane pesmi" da bo vedno 5 vrstic
+        while len(cakalna_vrsta_baza.all()) < 5:
+            cakalna_vrsta_baza.insert({"id": 0, "naslov": "Ni izbrane pesmi", "avtor": "", "datoteka": ""}) 
 
         while pygame.mixer.music.get_busy():
             time.sleep(1)
@@ -188,7 +266,6 @@ def predvajaj_naslednjo():
 def zabelezeno():
     # za prikaz strani potem, ko uporabnik izbere pesem
     return render_template("zabelezeno.html")
-
 
 @app.route("/dodaj_pesem", methods=["POST"])
 def dodaj_pesem():

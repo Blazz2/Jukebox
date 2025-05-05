@@ -7,13 +7,13 @@
 </head>
 <body>
     <h1>Seznam pesmi</h1>
-    {% if show_code_form %}
+    {% if prikazi_vnos_kode %}
         {% if napaka %}
             <p style="color: red;">{{ napaka }}</p>
         {% endif %}
         <form method="POST" action="{{ url_for('pesmi') }}">
             <label for="koda">Vnesi kodo z zaslona:</label>
-            <input type="text" id="koda" name="koda" required>
+            <input type="number" id="koda" name="koda" required>
             <button type="submit">Potrdi</button>
         </form>
     {% else %}
@@ -45,11 +45,11 @@
 
         <script>
             function handleClick(element) {
-                // pridobi element, ki ga je izbral uporabnik 
+                // pridobi vrednost elementa, ki ga je izbral uporabnik 
                 var id = $(element).data('id');
                 var naslov = $(element).data('naslov');
-                // pridobi kodo iz flask seje 
-                var koda = "{{ session['uporabniska_koda'] | safe }}";
+                // pridobi kodo iz flask seje, | safe prepreči kodiranje HTML znakov
+                var koda = "{{ session['uporabniska_koda'] }}";
                 var potrditev = confirm("Ali ste prepričani, da želite izbrati: " + naslov + "?");
                 if (potrditev) {
                     // pošlje izbrano pesem in kodo na strežnik
@@ -74,35 +74,35 @@
 
             $(document).ready(function() {
                 // nastavi časovnik na 60 sekund
-                const totalTime = 60; 
-                let timeLeft = totalTime;
+                const celotenCas = 60; 
+                let preostaliCas = celotenCas;
 
-                // Posodobi časovnik vsako sekundo
-                const timer = setInterval(function() {
-                    timeLeft--;
+                // posodobi časovnik vsako sekundo
+                const casovnik = setInterval(function() {
+                    preostaliCas--;
 
-                    // Posodobi širino časovnega traku
-                    const percentage = (timeLeft / totalTime) * 100;
-                    $('#timer-bar').css('width', percentage + '%');
+                    // posodobi širino časovnega traku
+                    const odstotek = (preostaliCas / celotenCas) * 100;
+                    $('#timer-bar').css('width', odstotek + '%');
 
-                    // Posodobi barvo časovnega traku (od zelene do rdeče)
-                    const hue = (timeLeft / totalTime) * 120; // HSL odtenek: 120 (zelena) do 0 (rdeča)
+                    // posodobi barvo časovnega traku (od zelene do rdeče)
+                    const hue = (preostaliCas / celotenCas) * 120; // HSL odtenek: 120 (zelena) do 0 (rdeča)
                     $('#timer-bar').css('background-color', `hsl(${hue}, 100%, 50%)`);
 
-                    // Posodobi besedilo časovnika
-                    const minutes = Math.floor(timeLeft / 60);
-                    const seconds = timeLeft % 60;
-                    $('#timer-text').text(`Preostali čas: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`);
+                    // posodobi besedilo časovnika
+                    const minute = Math.floor(preostaliCas / 60);
+                    const sekunde = preostaliCas % 60;
+                    $('#timer-text').text(`Preostali čas: ${minute}:${sekunde < 10 ? '0' : ''}${sekunde}`);
 
-                    // Preusmeri, ko čas poteče
-                    if (timeLeft <= 0) {
-                        clearInterval(timer);
+                    // preusmeri, ko čas poteče
+                    if (preostaliCas <= 0) {
+                        clearInterval(casovnik);
                         alert('Čas je potekel!');
                         window.location.href = '/prepozno';
                     }
                 }, 1000);
 
-                // Prepreči osvežitev strani
+                // prepreči osvežitev strani
                 $(document).on('keydown', function(e) {
                     if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
                         e.preventDefault();
