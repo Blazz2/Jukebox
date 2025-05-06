@@ -6,7 +6,15 @@
     
     
     
+    
+    
+    
+    
     <pesem>
+        
+        
+        
+        
         
         
         
@@ -20,7 +28,15 @@
         
         
         
+        
+        
+        
+        
         <avtor>The Kid LAROI, Justin Bieber</avtor>
+        
+        
+        
+        
         
         
         
@@ -31,6 +47,10 @@
         
         
         
+        
+        
+    
+    
     
     
     
@@ -38,10 +58,18 @@
     
     
     
+    
+    
 
     
     
+    
+    
     <pesem>
+        
+        
+        
+        
         
         
         
@@ -51,7 +79,15 @@
         
         
         
+        
+        
+        
+        
         <avtor>The Weeknd</avtor>
+        
+        
+        
+        
         
         
         
@@ -59,31 +95,99 @@
         <naslov>Blinding Lights (Official Video)</naslov>
         
         
+        
+        
+    
+    
     
     
     </pesem>
     
     
+    
+    
 
     
+    
+    
     <pesem>
+        
+        
+        
+        
         
         
         <datum>2025-05-06 21:33:17</datum>
         
         
+        
+        
+        
+        
         <avtor>Ed Sheeran</avtor>
         
         
+        
+        
+        
+        
         <naslov>Shape of You (Official Music Video)</naslov>
+        
+        
+        
+    
+    
+    
+    </pesem>
+    
+    
+    
+
+    
+    
+    <pesem>
+        
+        
+        
+        
+        <datum>2025-05-06 21:35:16</datum>
+        
+        
+        
+        
+        <avtor>Harry Styles</avtor>
+        
+        
+        
+        
+        <naslov>Watermelon Sugar (Official Video)</naslov>
+        
+        
+    
+    
+    </pesem>
+    
+    
+
+    
+    <pesem>
+        
+        
+        <datum>2025-05-06 21:38:23</datum>
+        
+        
+        <avtor>Dua Lipa</avtor>
+        
+        
+        <naslov>Levitating Featuring DaBaby (Official Music Video)</naslov>
         
     
     </pesem>
     
 
     <pesem>
-        <datum>2025-05-06 21:35:16</datum>
-        <avtor>Harry Styles</avtor>
-        <naslov>Watermelon Sugar (Official Video)</naslov>
+        <datum>2025-05-06 21:40:20</datum>
+        <avtor>Dua Lipa</avtor>
+        <naslov>Levitating Featuring DaBaby (Official Music Video)</naslov>
     </pesem>
 </predvajane_pesmi>
