@@ -11,6 +11,8 @@ from datetime import datetime, timedelta
 import random
 import string
 from flask_session import Session
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
 
 app = Flask(__name__)
 
@@ -43,11 +45,13 @@ if os.path.exists(muske_mapa):
     for pesem in baza_pesmi.all():
         if os.path.basename(pesem['datoteka']) not in trenutne_datoteke:
             baza_pesmi.remove(doc_ids=[pesem.doc_id])
+
+    max_id = max([pesem['id'] for pesem in baza_pesmi.all()], default=0)
     
     # doda nove pesmi, ki jih še ni v bazi
     for datoteka in trenutne_datoteke:
         if datoteka not in datoteke_v_bazi:
-            # razdeli ime datoteke na avtorja in naslov
+            #    # razdeli ime datoteke na avtorja in naslov
             ime_brez_koncnice = os.path.splitext(datoteka)[0]
             avtor = "Neznan"
             naslov = ime_brez_koncnice
@@ -77,6 +81,8 @@ if os.path.exists(privzete_pesmi_mapa):
     for pesem in baza_privzetih_pesmi.all():
         if os.path.basename(pesem['datoteka']) not in trenutne_privzete:
             baza_privzetih_pesmi.remove(doc_ids=[pesem.doc_id])
+
+    max_privzeti_id = max([pesem['id'] for pesem in baza_privzetih_pesmi.all()], default=0)
     
     # dodaj nove pesmi, ki jih še ni v bazi
     for datoteka in trenutne_privzete:
@@ -105,12 +111,34 @@ if not trenutna_pesem_baza.all():
 
 # napolni 5x, da bo tabela vedno imela 5 vrstic
 cakalna_vrsta_baza.truncate()
-for _ in range(6):
+for _ in range(5):
     cakalna_vrsta_baza.insert({"id": 0, "naslov": "Ni izbrane pesmi", "avtor": "", "datoteka": ""})
 
 def generiraj_kodo():
-    #generira naključno 3 mestno kodo
+    # generira naključno 3 mestno kodo
     return ''.join(random.choices(string.digits, k=3))
+
+# funkcija za zapis v XML datoteko
+def zapis_v_xml(pesem, datum):
+    xml_datoteka = 'predvajane_pesmi.xml'
+    
+    # če datoteka že obstaja, jo naloži, sicer ustvari novo strukturo
+    if os.path.exists(xml_datoteka):
+        drevo = ET.parse(xml_datoteka)
+        koren = drevo.getroot()
+    else:
+        koren = ET.Element("predvajane_pesmi")
+    
+    # ustvari nov vnos za pesem
+    vnos = ET.SubElement(koren, "pesem")
+    ET.SubElement(vnos, "datum").text = datum
+    ET.SubElement(vnos, "avtor").text = pesem['avtor']
+    ET.SubElement(vnos, "naslov").text = pesem['naslov']
+    
+    # zapiše XML datoteko z lepim formatiranjem
+    xmlstr = minidom.parseString(ET.tostring(koren)).toprettyxml(indent="    ")
+    with open(xml_datoteka, "w", encoding="utf-8") as datoteka:
+        datoteka.write(xmlstr)
 
 # inicializacija pygame mixerja za predvajanje zvoka
 pygame.mixer.init()  
@@ -248,6 +276,9 @@ def predvajaj_naslednjo():
             "avtor": pesem["avtor"],
             "datoteka": pesem["datoteka"]
         })
+        # zapis predvajane pesmi v XML
+        datum = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        zapis_v_xml(pesem, datum)
         # predvaja pesem in jo odstrani iz čakalne vrste
         pygame.mixer.music.play()
         cakalna_vrsta_baza.remove(doc_ids=[pesem.doc_id])
