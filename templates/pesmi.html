@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Pesmi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -9,11 +10,22 @@
     <h1>Seznam pesmi</h1>
     {% if prikazi_vnos_kode %}
         {% if napaka %}
-            <p style="color: red;">{{ napaka }}</p>
+            <p style="color: white;">{{ napaka }}</p>
         {% endif %}
+        <p class="navodila-text">
+            <span class="mini-naslov">Dobrodošli v glasbeni platformi simDJ!</span> Omogočamo vam javno predvajanje izbrane pesmi. 
+            Za pravilno delovanje morate biti povezani na lokalno wifi omrežje. V prazno polje vpišite 
+            trimestno številko, ki je objavljena na oddaljenem TV ekranu. Na telefonu se vam bo nato 
+            prikazal seznam vseh pesmi, med katerimi je potrebno v eni minuti izbrati eno pesem, ki se 
+            bo takoj začela predvajati oz. bo dodana v čakalno vrsto. Ko bo na ekranu spet na voljo nova 
+            koda, lahko ponovno sodeluješ. Predloge za simDJ glasbeni izbor pesmi vpišite v tekstovno 
+            polje ob koncu seznama. 
+            Če ste registrirani uporabnik, pridobite na voljo širši izbor pesmi in tudi vaš izbor se 
+            vedno doda na vrh čakalne liste.
+        </p>
         <form method="POST" action="{{ url_for('pesmi') }}">
-            <label for="koda">Vnesi kodo z zaslona:</label>
-            <input type="number" id="koda" name="koda" required>
+            <label for="koda" class="koda-label">Vnesi kodo z zaslona:</label>
+            <input type="number" id="koda" name="koda" class="koda-input" required>
             <button type="submit">Potrdi</button>
         </form>
     {% else %}
@@ -45,14 +57,11 @@
 
         <script>
             function handleClick(element) {
-                // pridobi vrednost elementa, ki ga je izbral uporabnik 
                 var id = $(element).data('id');
                 var naslov = $(element).data('naslov');
-                // pridobi kodo iz flask seje, | safe prepreči kodiranje HTML znakov
                 var koda = "{{ session['uporabniska_koda'] }}";
                 var potrditev = confirm("Ali ste prepričani, da želite izbrati: " + naslov + "?");
                 if (potrditev) {
-                    // pošlje izbrano pesem in kodo na strežnik
                     $.ajax({
                         url: "/v_cakalno_vrsto",
                         method: "POST",
@@ -73,28 +82,18 @@
             }
 
             $(document).ready(function() {
-                // nastavi časovnik na 60 sekund
                 const celotenCas = 60; 
                 let preostaliCas = celotenCas;
 
-                // posodobi časovnik vsako sekundo
                 const casovnik = setInterval(function() {
                     preostaliCas--;
-
-                    // posodobi širino časovnega traku
                     const odstotek = (preostaliCas / celotenCas) * 100;
                     $('#timer-bar').css('width', odstotek + '%');
-
-                    // posodobi barvo časovnega traku (od zelene do rdeče)
-                    const hue = (preostaliCas / celotenCas) * 120; // HSL odtenek: 120 (zelena) do 0 (rdeča)
+                    const hue = (preostaliCas / celotenCas) * 120;
                     $('#timer-bar').css('background-color', `hsl(${hue}, 100%, 50%)`);
-
-                    // posodobi besedilo časovnika
                     const minute = Math.floor(preostaliCas / 60);
                     const sekunde = preostaliCas % 60;
                     $('#timer-text').text(`Preostali čas: ${minute}:${sekunde < 10 ? '0' : ''}${sekunde}`);
-
-                    // preusmeri, ko čas poteče
                     if (preostaliCas <= 0) {
                         clearInterval(casovnik);
                         alert('Čas je potekel!');
@@ -102,7 +101,6 @@
                     }
                 }, 1000);
 
-                // prepreči osvežitev strani
                 $(document).on('keydown', function(e) {
                     if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
                         e.preventDefault();

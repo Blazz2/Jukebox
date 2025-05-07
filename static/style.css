@@ -1,57 +1,180 @@
 /* Osnovni stili za body */
 body {
-    background-color: #EF4B62; /* Rdeče ozadje, enako kot v prejšnji strani */
+    background-color: #EF4B62; /* Rdeče ozadje */
     color: #F6F4F4; /* Bela barva besedila */
-    font-family: Arial, sans-serif; /* Enak font */
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    display: flex; /* Flexbox za centriranje */
-    flex-direction: column; /* Navpična razporeditev */
-    align-items: center; /* Centriranje vodoravno */
-    height: 100vh; /* Celotna višina zaslona */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh; /* Spremenjeno na min-height za več prostora */
 }
 
 /* Stili za naslov h1 */
 h1 {
-    font-size: 50px; /* Enaka velikost kot <p> na prejšnji strani */
-    margin-bottom: 20px; /* Razmik pod naslovom */
-    text-align: center; /* Centriranje besedila */
-    border: 2px solid #FFFFFF; /* Bela obroba, enaka kot pri <p> */
+    font-size: 50px;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 2px solid #FFFFFF;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+/* Stil za besedilo nad poljem za vnos kode */
+p {
+    background-color: rgba(246, 244, 244, 0.1); /* Prosojno belo ozadje */
+    border: 2px solid #FFFFFF; /* Bela obroba */
     border-radius: 15px; /* Zaobljeni robovi */
-    padding: 10px; /* Notranji razmik */
+    padding: 15px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    text-align: center;
+    max-width: 600px; /* Omejitev širine za berljivost */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Senca */
+}
+
+.navodila-text {
+    font-size: 1.2em; /* Povečana velikost besedila */
+    line-height: 1.5; /* Izboljšana berljivost */
+    text-align: justify; /* Obojestranska poravnava */
+}
+
+/* Stil za mini naslov znotraj navodil */
+.mini-naslov {
+    font-size: 1.5em; /* Večja velikost za poudarek */
+    font-weight: bold; /* Krepko besedilo */
+    display: block; /* Zavzame svojo vrstico */
+    margin-bottom: 10px; /* Razmik pod naslovom */
+    text-align: center; /* Poravnava na sredino */
+}
+
+/* Stil za obrazec za vnos kode */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; /* Povečan razmik med elementi */
+    max-width: 800px; /* Povečana širina obrazca za več prostora */
+    width: 100%; /* Polna širina znotraj omejitve */
+}
+
+/* Stil za oznako */
+label.koda-label {
+    font-weight: bold;
+    font-size: 1.8em !important; /* Še večja velikost besedila */
+    display: block; /* Oznaka na svoji vrstici */
+    text-align: center;
+    margin-bottom: 25px; /* Večji razmik pod oznako */
+    width: 100%; /* Zagotovi polno širino */
+}
+
+/* Stil za vnosno polje */
+input[type="number"].koda-input {
+    width: 100%; /* Polje zavzame celotno širino */
+    max-width: 450px; /* Povečana maksimalna širina */
+    height: 65px; /* Povečana višina */
+    padding: 12px;
+    font-size: 1.5em !important; /* Enaka velikost kot mini-naslov */
+    background-color: rgba(246, 244, 244, 0.1); /* Prosojno belo ozadje */
+    border: 2px solid #FFFFFF; /* Bela obroba */
+    border-radius: 12px; /* Zaobljeni robovi */
+    color: #F6F4F4; /* Bela barva besedila */
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Senca */
+    box-sizing: border-box; /* Prepreči povečanje zaradi paddinga */
+}
+
+input[type="number"].koda-input:focus {
+    outline: none;
+    border-color: #FFFFFF; /* Ohranimo belo obrobo */
+    background-color: rgba(246, 244, 244, 0.2); /* Malo svetlejše ozadje */
+}
+
+/* Stil za gumb */
+form button {
+    background-color: rgba(246, 244, 244, 0.2); /* Prosojno belo ozadje */
+    color: #F6F4F4; /* Bela barva besedila */
+    padding: 15px 30px; /* Povečan padding */
+    border: 2px solid #FFFFFF; /* Bela obroba */
+    border-radius: 12px; /* Zaobljeni robovi */
+    font-size: 1.5em !important; /* Enaka velikost kot mini-naslov */
+    cursor: pointer;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Večja senca */
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: rgba(246, 244, 244, 0.3); /* Svetlejše ozadje ob hover */
+}
+
+/* Stil za sporočilo o napaki */
+p[style*="color: red"] {
+    background-color: rgba(231, 76, 60, 0.2); /* Prosojno rdeče ozadje */
+    border: 2px solid #FFFFFF; /* Bela obroba */
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Senca */
+}
+
+/* Stili za časovnik */
+#timer-text {
+    font-size: 16px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#timer-bar-container {
+    width: 300px;
+    height: 20px;
+    background-color: rgba(246, 244, 244, 0.1); /* Prosojno belo ozadje */
+    border: 2px solid #FFFFFF; /* Bela obroba */
+    border-radius: 10px;
+    margin: 10px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Senca */
+}
+
+#timer-bar {
+    width: 100%;
+    height: 100%;
+    background-color: #4caf50; /* Začetna barva, bo prepisana z JS */
+    border-radius: 8px; /* Zaobljeni robovi znotraj posode */
+    transition: width 1s linear, background-color 1s linear;
 }
 
 /* Stili za tabelo */
 table {
     width: 100%;
-    max-width: 600px; /* Omejitev širine tabele */
-    border-collapse: separate; /* Omogoča zaobljene robove */
-    border-spacing: 0; /* Odstrani privzeti razmik */
+    max-width: 600px;
+    border-collapse: separate;
+    border-spacing: 0;
     background-color: rgba(246, 244, 244, 0.1); /* Prosojno belo ozadje */
-    border-radius: 10px; /* Zaobljeni robovi */
-    overflow: hidden; /* Poskrbi, da vsebina spoštuje zaobljene robove */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Enaka senca kot prej */
-    margin: 0 auto; /* Centriranje tabele */
-    max-height: 60vh; /* Omejitev višine tabele */
-    overflow-y: auto; /* Dodaj drsnik, če je vsebine preveč */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+    max-height: 60vh;
+    overflow-y: auto;
 }
 
 /* Stili za celice tabele */
 th, td {
-    padding: 15px; /* Enak notranji razmik kot prej */
-    text-align: center; /* Centriranje besedila */
+    padding: 15px;
+    text-align: center;
 }
 
 /* Stili za glavo tabele */
 th {
-    background-color: rgba(246, 244, 244, 0.2); /* Prosojno belo ozadje za glavo */
-    font-weight: bold; /* Krepko besedilo */
-    border-bottom: 2px solid #F6F4F4; /* Bela črta pod glavo */
+    background-color: rgba(246, 244, 244, 0.2);
+    font-weight: bold;
+    border-bottom: 2px solid #F6F4F4;
 }
 
 /* Stili za vrstice tabele */
 td {
-    border-bottom: 1px solid rgba(246, 244, 244, 0.3); /*   /* Lighter border for rows */
+    border-bottom: 1px solid rgba(246, 244, 244, 0.3);
 }
 
 /* Odstrani spodnjo obrobo za zadnjo vrstico */
@@ -61,62 +184,85 @@ tr:last-child td {
 
 /* Hover efekt za vrstice */
 tr:hover {
-    background-color: rgba(246, 244, 244, 0.15); /* Enak hover efekt */
-    transition: background-color 0.3s ease; /* Gladka tranzicija */
+    background-color: rgba(246, 244, 244, 0.15);
+    transition: background-color 0.3s ease;
 }
 
-/* Stili za celice z razredom naslov-celica (klikabilne celice) */
+/* Stili za celice z razredom naslov-celica */
 .naslov-celica {
-    cursor: pointer; /* Kazalec, ki nakazuje, da je element klikabilen */
+    cursor: pointer;
+}
+
+/* Stili za polje za predlaganje pesmi */
+.pesem-input {
+    width: 400px;
+    height: 40px;
+    font-size: 18px;
+    padding: 10px;
+    background-color: rgba(246, 244, 244, 0.1); /* Prosojno belo ozadje */
+    border: 2px solid #FFFFFF; /* Bela obroba */
+    border-radius: 10px;
+    color: #F6F4F4; /* Bela barva besedila */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Senca */
+    box-sizing: border-box;
+}
+
+.pesem-input:focus {
+    outline: none;
+    border-color: #FFFFFF; /* Bela obroba pri fokusiranju */
+    background-color: rgba(246, 244, 244, 0.2); /* Svetlejše ozadje */
+}
+
+.pesem-input::placeholder {
+    color: #F6F4F4; /* Bela barva placeholder besedila */
+    opacity: 1; /* Polna vidnost */
+}
+
+.pesem-input::-webkit-input-placeholder {
+    color: #F6F4F4; /* Podpora za WebKit brskalnike */
+}
+
+.pesem-input::-moz-placeholder {
+    color: #F6F4F4; /* Podpora za Firefox */
+}
+
+.pesem-input:-ms-input-placeholder {
+    color: #F6F4F4; /* Podpora za starejše IE različice */
 }
 
 /* Stili za povezave */
 a {
-    color: #F6F4F4; /* Bela barva povezav */
+    color: #F6F4F4;
     text-decoration: none;
-    font-weight: bold; /* Krepko besedilo */
-    display: block; /* Povezava kot blok za centriranje */
-    text-align: center; /* Centriranje besedila */
-    margin-top: 20px; /* Razmik nad povezavo */
+    font-weight: bold;
+    display: block;
+    text-align: center;
+    margin-top: 20px;
 }
 
-/* Hover efekt za povezave */
 a:hover {
-    text-decoration: underline; /* Podčrtaj ob prehodu miške */
-    color: #FFFFFF; /* Svetlejša bela barva ob prehodu */
+    text-decoration: underline;
+    color: #FFFFFF;
 }
 
-#timer-bar-container {
-    width: 300px;
-    height: 20px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    margin: 10px 0;
-}
-
-#timer-bar {
-    width: 100%;
-    height: 100%;
-    background-color: #4caf50; /* Začetna barva, bo prepisana z JS */
-    transition: width 1s linear, background-color 1s linear; /* Dodan prehod za barvo */
-}
-
-#timer-text {
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-.pesem-input {
-    width: 400px; /* Širina polja */
-    height: 40px; /* Višina polja */
-    font-size: 18px; /* Velikost pisave */
-    padding: 10px; /* Notranji odmik za udobnejše tipkanje */
-    border: 2px solid #ccc; /* Obroba za boljši videz */
-    border-radius: 5px; /* Zaobljeni robovi */
-    box-sizing: border-box; /* Prepreči, da bi padding povečal skupno velikost */
-}
-
-.pesem-input:focus {
-    outline: none; /* Odstrani privzeti obris pri fokusiranju */
-    border-color: #4caf50; /* Zelena obroba, ko je polje aktivno */
+/* Media query za mobilne naprave */
+@media (max-width: 600px) {
+    form {
+        max-width: 100%; /* Polna širina na manjših zaslonih */
+        gap: 15px; /* Manjši razmik na mobilnih */
+    }
+    label.koda-label {
+        font-size: 1.8em !important; /* Povečana velikost oznake */
+        margin-bottom: 20px;
+    }
+    input[type="number"].koda-input {
+        max-width: 100%; /* Polna širina na manjših zaslonih */
+        font-size: 1.5em !important; /* Ohranimo velikost besedila */
+        height: 65px; /* Ohranimo višino */
+        padding: 10px;
+    }
+    form button {
+        font-size: 1.5em !important; /* Ohranimo velikost gumba */
+        padding: 12px 24px; /* Prilagojen padding */
+    }
 }
