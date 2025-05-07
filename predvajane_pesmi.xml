@@ -20,105 +20,6 @@
     
     
     
-    <pesem>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <datum>2025-05-05 18:30:33</datum>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <avtor>Mark Ronson</avtor>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <naslov>Uptown Funk (Official Video) ft. Bruno Mars</naslov>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    </pesem>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
-    
-    
     
     
     
@@ -144,7 +45,15 @@
         
         
         
-        <datum>2025-05-05 18:35:04</datum>
+        
+        
+        
+        
+        
+        
+        
+        
+        <datum>2025-05-06 21:30:05</datum>
         
         
         
@@ -155,89 +64,6 @@
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        <avtor>Shakira</avtor>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <naslov>Waka Waka (This Time for Africa) (The Official 2010 FIFA World Cup Song)</naslov>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    </pesem>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    <pesem>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <datum>2025-05-05 18:39:10</datum>
         
         
         
@@ -271,6 +97,16 @@
         
         
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         <naslov>STAY (Official Video)</naslov>
         
         
@@ -280,6 +116,16 @@
         
         
         
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
     
     
     
@@ -297,7 +143,17 @@
     
     
     
+    
+    
+    
+    
+    
 
+    
+    
+    
+    
+    
     
     
     
@@ -320,7 +176,17 @@
         
         
         
-        <datum>2025-05-05 18:41:49</datum>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <datum>2025-05-06 21:30:46</datum>
         
         
         
@@ -333,67 +199,6 @@
         
         
         
-        
-        
-        <avtor>Nepoznan</avtor>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <naslov>Short Song (English Song) [W Lyrics] 30 seconds</naslov>
-        
-        
-        
-        
-        
-        
-        
-    
-    
-    
-    
-    
-    
-    
-    </pesem>
-    
-    
-    
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    <pesem>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <datum>2025-05-05 18:42:28</datum>
         
         
         
@@ -419,6 +224,18 @@
         
         
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         <naslov>Blinding Lights (Official Video)</naslov>
         
         
@@ -426,6 +243,18 @@
         
         
         
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
     
     
     
@@ -439,7 +268,19 @@
     
     
     
+    
+    
+    
+    
+    
+    
 
+    
+    
+    
+    
+    
+    
     
     
     
@@ -456,7 +297,142 @@
         
         
         
-        <datum>2025-05-05 18:47:06</datum>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <datum>2025-05-06 21:33:17</datum>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <avtor>Ed Sheeran</avtor>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <naslov>Shape of You (Official Music Video)</naslov>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    </pesem>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <pesem>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <datum>2025-05-06 21:35:16</datum>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -468,6 +444,16 @@
         
         
         <avtor>Harry Styles</avtor>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -484,6 +470,401 @@
         
         
         
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    </pesem>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <pesem>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <datum>2025-05-06 21:38:23</datum>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <avtor>Dua Lipa</avtor>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <naslov>Levitating Featuring DaBaby (Official Music Video)</naslov>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    </pesem>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    <pesem>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <datum>2025-05-06 21:40:20</datum>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <avtor>Dua Lipa</avtor>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <naslov>Levitating Featuring DaBaby (Official Music Video)</naslov>
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    </pesem>
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    <pesem>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <datum>2025-05-07 09:26:23</datum>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <avtor>DESINGERICA X DJEXON</avtor>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <naslov>PUMPALICCA (OFFICIAL VIDEO)</naslov>
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
+    
+    </pesem>
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    <pesem>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <datum>2025-05-07 09:28:34</datum>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <avtor>Marshmello ft. Bastille</avtor>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <naslov>Happier (Official Music Video)</naslov>
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
+    </pesem>
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <pesem>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <datum>2025-05-07 09:32:29</datum>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <avtor>Lady Gaga</avtor>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <naslov>Poker Face (Official Music Video)</naslov>
+        
+        
+        
+        
+        
     
     
     
@@ -509,7 +890,7 @@
         
         
         
-        <datum>2025-05-05 18:50:24</datum>
+        <datum>2025-05-07 09:36:03</datum>
         
         
         
@@ -518,7 +899,7 @@
         
         
         
-        <avtor>Harry Styles</avtor>
+        <avtor>Dua Lipa</avtor>
         
         
         
@@ -527,7 +908,7 @@
         
         
         
-        <naslov>Watermelon Sugar (Official Video)</naslov>
+        <naslov>Don't Start Now (Official Music Video)</naslov>
         
         
         
@@ -552,21 +933,21 @@
         
         
         
-        <datum>2025-05-05 18:53:36</datum>
+        <datum>2025-05-07 09:46:49</datum>
         
         
         
         
         
         
-        <avtor>Harry Styles</avtor>
+        <avtor>The Kid LAROI, Justin Bieber</avtor>
         
         
         
         
         
         
-        <naslov>As It Was (Official Video)</naslov>
+        <naslov>STAY (Official Video)</naslov>
         
         
         
@@ -585,44 +966,44 @@
         
         
         
-        <datum>2025-05-05 18:56:24</datum>
+        <datum>2025-05-07 09:49:27</datum>
         
         
-        
-        
-        <avtor>Harry Styles</avtor>
-        
-        
-        
-        
-        <naslov>As It Was (Official Video)</naslov>
-        
-        
-    
-    
-    </pesem>
-    
-    
-
-    
-    <pesem>
-        
-        
-        <datum>2025-05-05 18:59:10</datum>
         
         
         <avtor>K'NAAN</avtor>
         
         
+        
+        
         <naslov>Wavin' Flag (Coca-Cola Celebration Mix)</naslov>
+        
+        
+    
+    
+    </pesem>
+    
+    
+
+    
+    <pesem>
+        
+        
+        <datum>2025-05-07 09:51:51</datum>
+        
+        
+        <avtor>Ed Sheeran</avtor>
+        
+        
+        <naslov>Shape of You (Official Music Video)</naslov>
         
     
     </pesem>
     
 
     <pesem>
-        <datum>2025-05-06 07:41:34</datum>
-        <avtor>Ed Sheeran</avtor>
-        <naslov>Perfect (Official Music Video)</naslov>
+        <datum>2025-05-07 09:56:29</datum>
+        <avtor>Dua Lipa</avtor>
+        <naslov>Levitating Featuring DaBaby (Official Music Video)</naslov>
     </pesem>
 </predvajane_pesmi>
