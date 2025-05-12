@@ -1,0 +1,11 @@
+{
+  "_default": {
+    "1": {
+      "id": "e1a43281-1438-41ce-955d-73c5edaabdfc",
+      "eposta": "blazz.zorko@gmail.com",
+      "uporabnisko_ime": "Blazz",
+      "geslo": "scrypt:32768:8:1$r22XQey7817GRTT9$8b022da55c8363b24408dbf836e800f8a0939d072df7e3e8e0bf3f687936cbb13845a5d33de9c3e4f19577454de679ff3a9a3a77bb3730afe8020eb2a335eed4",
+      "vloga": "prijavljen"
+    }
+  }
+}

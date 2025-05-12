@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registracija</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='prijava.css') }}">
+</head>
+<body>
+    <h1>Registracija</h1>
+    {% if napaka %}
+        <p style="color: red;">{{ napaka }}</p>
+    {% endif %}
+    <form method="POST" action="{{ url_for('registracija') }}">
+        <label for="uporabnisko_ime">Uporabniško ime:</label><br>
+        <input type="text" id="uporabnisko_ime" name="uporabnisko_ime" required><br>
+        <label for="eposta">E-pošta:</label><br>
+        <input type="email" id="eposta" name="eposta" required><br>
+        <label for="geslo">Geslo:</label><br>
+        <input type="password" id="geslo" name="geslo" required><br><br>
+        <button type="submit">Registriraj se</button>
+    </form>
+    <p>Že imaš račun? <a href="{{ url_for('prijava') }}">Prijavi se</a></p>
+</body>
+</html>

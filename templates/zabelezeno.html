@@ -3,10 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Hvala</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}"> 
 </head>
 <body>
     <p>Hvala! Uživaj v poslušanju.</p>
+
+    <script>
+        setTimeout(function() {
+            window.location.href = "{{ url_for('pesmi') }}";
+        }, 5000);
+    </script>
 </body>
 </html>

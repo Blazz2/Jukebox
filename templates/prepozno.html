@@ -7,6 +7,12 @@
     <title>Document</title>
 </head>
 <body>
-    <p>Vaš čas izbire vam je potekel.</p>
+    <p>Čas izbire pesmi je potekel.</p>
+
+    <script>
+        setTimeout(function() {
+            window.location.href = "{{ url_for('pesmi') }}";
+        }, 5000);
+    </script>
 </body>
 </html>

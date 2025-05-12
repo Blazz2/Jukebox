@@ -7,33 +7,59 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Seznam pesmi</h1>
     {% if prikazi_vnos_kode %}
+        {% if prijavljen %}
+            {% if je_placljiva_verzija %}
+                <div class="prijava-status">
+                    Prijavljen kot: {{ vloga|capitalize }} {% if uporabnisko_ime %}({{ uporabnisko_ime }}){% endif %}
+                    {% if vloga == 'gost' %}
+                        <a href="{{ url_for('prijava') }}">Prijava</a>
+                    {% else %}
+                        <a href="{{ url_for('odjava') }}">Odjava</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            {% if je_placljiva_verzija %}
+                <div class="prijava-status">
+                    Niste prijavljeni. <a href="{{ url_for('prijava') }}">Prijava</a>
+                </div>
+            {% endif %}
+        {% endif %}
+        
         {% if napaka %}
             <p style="color: white;">{{ napaka }}</p>
         {% endif %}
         <p class="navodila-text">
             <span class="mini-naslov">Dobrodošli v glasbeni platformi simDJ!</span> Omogočamo vam javno predvajanje izbrane pesmi. 
-            Za pravilno delovanje morate biti povezani na lokalno wifi omrežje. V prazno polje vpišite 
+            V prazno polje vpišite 
             trimestno številko, ki je objavljena na oddaljenem TV ekranu. Na telefonu se vam bo nato 
             prikazal seznam vseh pesmi, med katerimi je potrebno v eni minuti izbrati eno pesem, ki se 
             bo takoj začela predvajati oz. bo dodana v čakalno vrsto. Ko bo na ekranu spet na voljo nova 
             koda, lahko ponovno sodeluješ. Predloge za simDJ glasbeni izbor pesmi vpišite v tekstovno 
             polje ob koncu seznama. 
-            Če ste registrirani uporabnik, pridobite na voljo širši izbor pesmi in tudi vaš izbor se 
-            vedno doda na vrh čakalne liste.
+            {% if je_placljiva_verzija %}Če ste registrirani uporabnik, pridobite na voljo širši izbor pesmi in tudi vaš izbor se 
+            vedno doda na vrh čakalne liste.{% endif %}
         </p>
         <form method="POST" action="{{ url_for('pesmi') }}">
             <label for="koda" class="koda-label">Vnesi kodo z zaslona:</label>
             <input type="number" id="koda" name="koda" class="koda-input" required>
             <button type="submit">Potrdi</button>
         </form>
+        {% if je_placljiva_verzija %}
+        <p>
+            <a href="{{ url_for('prijava') }}">Prijavi se</a> | 
+            <a href="{{ url_for('registracija') }}">Registriraj se</a>
+        </p>
+        {% endif %}
     {% else %}
         <p id="timer-text">Čas za izbiro pesmi: 1:00</p>
         <div id="timer-bar-container">
             <div id="timer-bar"></div>
         </div>
-
+        
+        <h1>Seznam pesmi</h1>
+        
         <table>
             <thead>
                 <tr>
@@ -51,64 +77,76 @@
             </tbody>
         </table>
         <br>
-        <form method="POST" action="/dodaj_pesem">
-            <input type="text" name="pesem" class="pesem-input" placeholder="Pesem, ki bi rad, da se predvaja">
-        </form>
+        {% if je_placljiva_verzija and vloga != 'gost' %}
+            <form method="POST" action="/dodaj_pesem">
+                <input type="text" name="pesem" class="pesem-input" placeholder="Pesem, ki bi rad, da se predvaja">
+                <button type="submit">Pošlji predlog</button>
+            </form>
+        {% endif %}
 
-        <script>
-            function handleClick(element) {
-                var id = $(element).data('id');
-                var naslov = $(element).data('naslov');
-                var koda = "{{ session['uporabniska_koda'] }}";
-                var potrditev = confirm("Ali ste prepričani, da želite izbrati: " + naslov + "?");
-                if (potrditev) {
-                    $.ajax({
-                        url: "/v_cakalno_vrsto",
-                        method: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify({ id: id, koda: koda }),
-                        success: function(response) {
-                            console.log("Uspešno poslal podatke:", response);
-                            window.location.href = "/zabelezeno";
-                        },
-                        error: function(error) {
-                            console.error("Napaka pri pošiljanju:", error);
-                            alert("Napaka: " + (error.responseJSON?.error || "Neznana napaka"));
-                        }
-                    });
-                } else {
-                    console.log("Uporabnik je preklical izbiro.");
-                }
-            }
-
-            $(document).ready(function() {
-                const celotenCas = 60; 
-                let preostaliCas = celotenCas;
-
-                const casovnik = setInterval(function() {
-                    preostaliCas--;
-                    const odstotek = (preostaliCas / celotenCas) * 100;
-                    $('#timer-bar').css('width', odstotek + '%');
-                    const hue = (preostaliCas / celotenCas) * 120;
-                    $('#timer-bar').css('background-color', `hsl(${hue}, 100%, 50%)`);
-                    const minute = Math.floor(preostaliCas / 60);
-                    const sekunde = preostaliCas % 60;
-                    $('#timer-text').text(`Preostali čas: ${minute}:${sekunde < 10 ? '0' : ''}${sekunde}`);
-                    if (preostaliCas <= 0) {
-                        clearInterval(casovnik);
-                        alert('Čas je potekel!');
-                        window.location.href = '/prepozno';
-                    }
-                }, 1000);
-
-                $(document).on('keydown', function(e) {
-                    if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
-                        e.preventDefault();
-                        alert('Osvežitev ni dovoljena! Časovnik se nadaljuje.');
+    <script>
+        // funkcija se sproži ob kliku na element
+        function handleClick(element) {
+            // pridobi id iz podatkovnega atributa
+            var id = $(element).data('id'); 
+            // pridobi naslov iz naslovne celice
+            var naslov = $(element).data('naslov');
+            // uporabniška koda iz seje (flask) 
+            var koda = "{{ session['uporabniska_koda'] | safe }}"; 
+            
+            // potrdi izbiro
+            var potrditev = confirm("ali ste prepričani, da želite izbrati: " + naslov + "?");
+            if (potrditev) {
+                // pošlji podatke na strežnik z ajax post zahtevkom
+                $.ajax({
+                    url: "/v_cakalno_vrsto",
+                    method: "POST",
+                    contentType: "application/json", // tip vsebine
+                    data: JSON.stringify({ id: id, koda: koda }), // podatki v json obliki
+                    success: function(response) {
+                        console.log("uspešno poslal podatke:", response);
+                        window.location.href = "/zabelezeno";
+                    },
+                    error: function(error) {
+                        console.error("napaka pri pošiljanju:", error);
+                        alert("napaka: " + (error.responseJSON?.error || "neznana napaka"));
                     }
                 });
+            } else {
+                console.log("uporabnik je preklical izbiro.");
+            }
+        }
+
+        $(document).ready(function() {
+            const celotenCas = 60; // začetni čas v sekundah
+            let preostaliCas = celotenCas;
+
+            // nastavi interval za časovnik
+            const casovnik = setInterval(function() {
+                preostaliCas--; // zmanjša preostali čas
+                const odstotek = (preostaliCas / celotenCas) * 100; // izračun širine za vrstico
+                $('#timer-bar').css('width', odstotek + '%'); // nastavi širino vrstice
+                const hue = (preostaliCas / celotenCas) * 120; // barva (od zelene do rdeče)
+                $('#timer-bar').css('background-color', `hsl(${hue}, 100%, 50%)`); // nastavi barvo vrstice
+                const minute = Math.floor(preostaliCas / 60); // minute
+                const sekunde = preostaliCas % 60; // sekunde
+                $('#timer-text').text(`preostali čas: ${minute}:${sekunde < 10 ? '0' : ''}${sekunde}`); // posodobi besedilo
+                if (preostaliCas <= 0) {
+                    clearInterval(casovnik); // ustavi časovnik
+                    alert('čas je potekel!'); 
+                    window.location.href = '/prepozno'; 
+                }
+            }, 1000);
+
+            // prepreči osvežitev strani
+            $(document).on('keydown', function(e) {
+                if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+                    e.preventDefault(); // prepreči privzeto dejanje
+                    alert('osvežitev ni dovoljena! časovnik se nadaljuje.');
+                }
             });
-        </script>
+        });
+    </script>
     {% endif %}
 
     <a href="/">Nazaj</a>

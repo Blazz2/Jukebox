@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prijava</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='prijava.css') }}">
+</head>
+<body>
+    <h1>Prijava v simDJ</h1>
+    {% if napaka %}
+        <p style="color: red;">{{ napaka }}</p>
+    {% endif %}
+    <h2>Prijava z računom</h2>
+    <form method="POST" action="{{ url_for('prijava') }}">
+        <label for="eposta">E-pošta:</label><br>
+        <input type="email" id="eposta" name="eposta" required><br>
+        <label for="geslo">Geslo:</label><br>
+        <input type="password" id="geslo" name="geslo" required><br><br>
+        <button type="submit">Prijavi se</button>
+    </form>
+    <h2>Prijava kot gost</h2>
+    <form method="POST" action="{{ url_for('prijava') }}">
+        <input type="hidden" name="prijava_kot_gost" value="true">
+        <button type="submit">Nadaljuj kot gost</button>
+    </form>
+    <p>Nimaš računa? <a href="{{ url_for('registracija') }}">Registriraj se</a></p>
+</body>
+</html>

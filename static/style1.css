@@ -67,22 +67,24 @@ p {
     font-size: 50px;
     margin-bottom: 20px;
     text-align: center;
-    border: 2px solid #FFFFFF;
-    border-radius: 15px;
-    padding: 10px;
-    display: flex; /* Dodano za vodoravno poravnavo */
-    align-items: center; /* Vertikalno centriranje */
-    gap: 10px; /* Razmik med GIF-om in besedilom */
+}
+
+.trenutna-pesem-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .cd-gif img {
-    max-width: 75px; /* Prilagodite velikost GIF-a */
+    max-width: 150px; /* Povečano za 100% (iz 75px na 150px) */
     height: auto;
     border-radius: 5px;
 }
 
 .trenutna-pesem {
-    flex: 1; /* Besedilo zavzame preostali prostor */
+    font-size: 25px; /* Zmanjšano za 50% (iz 50px na 25px) */
+    margin: 10px 0 0 0;
 }
 
 img {
