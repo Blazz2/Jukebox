@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- povezava do css datoteke za stilizacijo -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='slika.css') }}">
+    <title>Jukebox - Slika</title>
+    <script>
+        // osveži stran vsake 10 sekund za preklop nazaj na običajno stran
+        setTimeout(function () {
+            location.reload();
+        }, 10000);
+    </script>
+</head>
+<body>
+    <!-- celozaslonska flickr slika -->
+    <div class="fullscreen-image-container">
+        {% if flickr_slika %}
+            <!-- prikaži flickr sliko, če je url na voljo -->
+            <img src="{{ flickr_slika }}" alt="Flickr Photo" class="fullscreen-photo">
+        {% else %}
+            <!-- prikaži nadomestno sliko, če flickr slika ni na voljo -->
+            <img src="{{ url_for('static', filename='slike/placeholder.jpg') }}" alt="Placeholder" class="fullscreen-photo">
+        {% endif %}
+    </div>
+</body>
+</html>

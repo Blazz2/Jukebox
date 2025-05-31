@@ -17,6 +17,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import webbrowser
 import json
+import requests 
 
 app = Flask(__name__)
 
@@ -269,7 +270,7 @@ def aktiviraj():
     vnesena_koda = data.get("koda")
     trenutni_cas = datetime.now()
 
-    # Določitev trajanja glede na kodo
+    # določitev trajanja glede na kodo
     if vnesena_koda == AKTIVACIJSKA_KODA_3_MINUTE:
         trajanje = 3
         je_placljiva_verzija = True
@@ -282,7 +283,7 @@ def aktiviraj():
     else:
         return jsonify({"success": False, "message": "Napačna aktivacijska koda."}), 400
 
-    # Shranjevanje aktivacije v bazo
+    # shranjevanje aktivacije v bazo
     baza_verzija.truncate()
     baza_verzija.insert({
         "koda": vnesena_koda,
@@ -292,12 +293,50 @@ def aktiviraj():
 
     return jsonify({"success": True, "message": f"Verzija uspešno nadgrajena v plačljivo za {trajanje} minut!"})
 
+
+# flickr API nastavitve
+FLICKR_API_KEY = '498cb791c6afa4001e6f7ae5e85e53bb'
+FLICKR_BASE_URL = 'https://api.flickr.com/services/rest/'
+
+def pridobi_album_slike():
+    params = {
+        'method': 'flickr.photosets.getPhotos',
+        'api_key': FLICKR_API_KEY,
+        'photoset_id': '72177720326150288',
+        'user_id': '41933830@N03', 
+        'format': 'json',
+        'nojsoncallback': 1,
+        'extras': 'url_o', 
+    }
+    
+    try:
+        response = requests.get(FLICKR_BASE_URL, params=params)
+        if response.status_code != 200:
+            print(f"Napaka pri Flickr API zahtevi: {response.status_code}")
+            return None
+        
+        data = response.json()
+        slike = data.get('photoset', {}).get('photo', [])
+        
+        if slike:
+            nakljucna_slika = random.choice(slike)
+            return nakljucna_slika.get('url_o')
+        else:
+            print("Ni slik v albumu.")
+            return None
+    except Exception as e:
+        print(f"Napaka pri pridobivanju Flickr slike: {e}")
+        return None
+
+
+
+
 # inicializacija pygame mixerja za predvajanje zvoka
 pygame.mixer.init()  
 
 @app.route("/")
 def zacetna_stran():
-    # generiranje QR kode z lokalnim IP-jem in prikaz tabele z čakalno vrsto ter trenutno pesmijo 
+    # generiranje qr kode z lokalnim ip-jem in prikaz tabele z čakalno vrsto ter trenutno pesmijo
     preveri_verzijo()
     static_mapa = os.path.join(os.path.dirname(__file__), 'static')
     qr_pot = os.path.join(static_mapa, 'qr_slika.png')
@@ -333,13 +372,56 @@ def zacetna_stran():
             "naslov": nakljucna_pesem["naslov"],
             "avtor": nakljucna_pesem["avtor"],
             "datoteka": nakljucna_pesem["datoteka"],
-            "vloga": "gost" 
+            "vloga": "gost"
         }, doc_ids=[cakalna_vrsta[0].doc_id])
         threading.Thread(target=predvajaj_naslednjo).start()
 
     # pridobi podatke o prijavljenem uporabniku
     prijavljen, vloga, uporabnisko_ime = pridobi_prijavljenega_uporabnika()
-    return render_template("index.html", slika="qr_slika.png", cakalna_vrsta=cakalna_vrsta, trenutna_pesem=trenutna_pesem, koda=koda, prijavljen=prijavljen, vloga=vloga, uporabnisko_ime=uporabnisko_ime, je_placljiva_verzija=je_placljiva_verzija)
+
+    # upravljanje izmenjave med običajno stranjo in celozaslonsko sliko
+    if 'last_switch_time' not in session:
+        # inicializiraj čas zadnje menjave in stanje
+        session['last_switch_time'] = trenuten_cas.isoformat()
+        session['show_image'] = False
+
+    last_switch_time = datetime.fromisoformat(session['last_switch_time'])
+    seconds_since_switch = (trenuten_cas - last_switch_time).total_seconds()
+
+    # določi, katero predlogo prikazati
+    if session['show_image']:
+        # prikaži celozaslonsko sliko za 10 sekund
+        if seconds_since_switch >= 10:
+            # preklopi nazaj na običajno stran
+            session['show_image'] = False
+            session['last_switch_time'] = trenuten_cas.isoformat()
+        else:
+            # pridobi flickr sliko in prikaži celozaslonsko stran
+            flickr_slika = pridobi_album_slike()
+            print(f"flickr_slika za celozaslonsko stran: {flickr_slika}")  # beleženje za preverjanje
+            return render_template("slika.html", flickr_slika=flickr_slika)
+    else:
+        # prikaži običajno stran za 60 sekund
+        if seconds_since_switch >= 60:
+            # preklopi na celozaslonsko sliko
+            session['show_image'] = True
+            session['last_switch_time'] = trenuten_cas.isoformat()
+            flickr_slika = pridobi_album_slike()
+            print(f"flickr_slika za celozaslonsko stran: {flickr_slika}")  # beleženje za preverjanje
+            return render_template("slika.html", flickr_slika=flickr_slika)
+
+    # privzeti prikaz običajne strani
+    return render_template(
+        "index.html",
+        slika="qr_slika.png",
+        cakalna_vrsta=cakalna_vrsta,
+        trenutna_pesem=trenutna_pesem,
+        koda=koda,
+        prijavljen=prijavljen,
+        vloga=vloga,
+        uporabnisko_ime=uporabnisko_ime,
+        je_placljiva_verzija=je_placljiva_verzija
+    )
 
 @app.route("/pesmi", methods=["GET", "POST"])
 def pesmi():

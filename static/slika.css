@@ -1,0 +1,30 @@
+/* osnovni stil za body */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: #000; /* črno ozadje za boljši kontrast */
+}
+
+/* kontejner za celozaslonsko sliko */
+.fullscreen-image-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* stil za celozaslonsko sliko */
+.fullscreen-photo {
+    width: 100vw;
+    height: 100vh;
+    object-fit: contain; /* ohrani razmerje stranic, prikaže celotno sliko */
+    margin: 0;
+    padding: 0;
+    display: block;
+}
